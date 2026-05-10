@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Адмін панель</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo" onclick="window.location.href='index.html'">GameStudy</div>
+
+    <div class="nav-buttons">
+        <button onclick="window.location.href='lessons.html'">Уроки</button>
+        <button onclick="window.location.href='test.html'">Тести</button>
+        <button onclick="window.location.href='profile.html'">Профіль</button>
+        <button onclick="window.location.href='rating.html'">Рейтинг</button>
+        <button onclick="openLoginModal()">Вхід</button>
+        <button onclick="openRegisterModal()">Реєстрація</button>
+        <button onclick="window.location.href='admin.html'">Адмін</button>
+    </div>
+</header>
+
+<div class="box">
+    <h2>Адмін панель</h2>
+    <p style="color:#c6d0f5;">Керуйте курсами платформи: додавайте, редагуйте та видаляйте контент.</p>
+
+    <input type="text" id="courseName" placeholder="Назва курсу">
+    <input type="text" id="courseDescription" placeholder="Опис курсу">
+    <input type="text" id="courseImage" placeholder="Посилання на зображення">
+
+    <div class="nav-buttons" style="justify-content:center; margin-top: 14px;">
+        <button onclick="addCourse()">Зберегти курс</button>
+    </div>
+
+    <h3 style="margin-top: 28px;">Список курсів</h3>
+    <div id="courseList"></div>
+
+    <p style="margin-top: 20px;"><a href="index.html">Повернутися на головну</a></p>
+</div>
+
+<script>
+    let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (!currentUser || currentUser.role !== "admin") {
+        alert("Доступ заборонено");
+        window.location.href = "index.html";
+    }
+
+    let courses = JSON.parse(localStorage.getItem("courses")) || [
+        {
+            name: "CS2 Aim",
+            description: "Покращення точності стрільби та реакції",
+            image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"
+        },
+        {
+            name: "Dota 2 Basics",
+            description: "Ролі героїв, фарм і командна взаємодія",
+            image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80"
+        },
+        {
+            name: "Valorant Tactics",
+            description: "Позиціонування, комунікація та контроль карти",
+            image: "https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=900&q=80"
+        }
+    ];
+
+    let editIndex = -1;
+
+    function renderCourses() {
+        let html = "";
+
+        courses.forEach((course, index) => {
+            html += `
+                <div class="course-item" style="text-align:left; margin-bottom:14px;">
+                    <img src="${course.image}" alt="${course.name}" style="width:100%; height:160px; object-fit:cover; border-radius:14px; margin-bottom:12px;">
+                    <h4 style="margin:0 0 8px 0;">${course.name}</h4>
+                    <p style="margin:0 0 12px 0; color:#c6d0f5;">${course.description}</p>
+
+                    <div class="nav-buttons" style="justify-content:flex-start;">
+                        <button onclick="editCourse(${index})">Редагувати</button>
+                        <button class="delete" onclick="deleteCourse(${index})">Видалити</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById("courseList").innerHTML = html;
+    }
+
+    function addCourse() {
+        let name = document.getElementById("courseName").value;
+        let description = document.getElementById("courseDescription").value;
+        let image = document.getElementById("courseImage").value;
+
+        if (name === "" || description === "" || image === "") {
+            alert("Заповніть всі поля");
+            return;
+        }
+
+        if (editIndex === -1) {
+            courses.push({ name, description, image });
+            alert("Курс додано!");
+        } else {
+            courses[editIndex] = { name, description, image };
+            alert("Курс оновлено!");
+            editIndex = -1;
+        }
+
+        saveCourses();
+        renderCourses();
+
+        document.getElementById("courseName").value = "";
+        document.getElementById("courseDescription").value = "";
+        document.getElementById("courseImage").value = "";
+    }
+
+    function editCourse(index) {
+        document.getElementById("courseName").value = courses[index].name;
+        document.getElementById("courseDescription").value = courses[index].description;
+        document.getElementById("courseImage").value = courses[index].image;
+        editIndex = index;
+    }
+
+    function deleteCourse(index) {
+        courses.splice(index, 1);
+        saveCourses();
+        renderCourses();
+    }
+
+    function saveCourses() {
+        localStorage.setItem("courses", JSON.stringify(courses));
+    }
+
+    renderCourses();
+</script>
+
+</body>
+</html>

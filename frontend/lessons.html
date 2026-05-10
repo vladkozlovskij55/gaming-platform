@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уроки</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo" onclick="window.location.href='index.html'">GameStudy</div>
+
+    <div class="nav-buttons">
+        <button onclick="window.location.href='lessons.html'">Уроки</button>
+        <button onclick="window.location.href='test.html'">Тести</button>
+        <button onclick="window.location.href='profile.html'">Профіль</button>
+        <button onclick="window.location.href='rating.html'">Рейтинг</button>
+        <button onclick="openLoginModal()">Вхід</button>
+        <button onclick="openRegisterModal()">Реєстрація</button>
+        <button onclick="window.location.href='admin.html'">Адмін</button>
+    </div>
+</header>
+
+<div class="box">
+    <h2>Навчальні уроки</h2>
+    <p style="color:#c6d0f5;">Оберіть гру та перегляньте навчальний матеріал.</p>
+
+    <div class="nav-buttons" style="justify-content:center; margin-top: 14px;">
+        <button onclick="showLesson('cs2')">CS2</button>
+        <button onclick="showLesson('dota2')">Dota 2</button>
+        <button onclick="showLesson('valorant')">Valorant</button>
+    </div>
+
+    <div id="lessonBlock" class="hidden" style="margin-top: 24px; text-align: left;">
+        <h3 id="lessonTitle" style="text-align:center;"></h3>
+        <p id="lessonText" style="line-height:1.7; color:#c6d0f5;"></p>
+    </div>
+
+    <p style="margin-top: 20px;"><a href="index.html">Повернутися на головну</a></p>
+</div>
+
+<script>
+    function showLesson(type) {
+        let title = "";
+        let text = "";
+
+        if (type === "cs2") {
+            title = "Урок: CS2";
+            text = "CS2 вимагає хорошої реакції, точного наведення та контролю віддачі. Для покращення aim важливо регулярно тренуватися на спеціальних картах, контролювати положення прицілу та аналізувати власні помилки. Гравець повинен правильно займати позиції, швидко реагувати на появу суперника та вміти використовувати карту для переваги в бою.";
+        }
+
+        if (type === "dota2") {
+            title = "Урок: Dota 2";
+            text = "У Dota 2 важливу роль відіграють командна взаємодія, фарм, розуміння ролей та контроль карти. Гравцю потрібно знати сильні й слабкі сторони свого героя, вміти добивати крипів, купувати правильні предмети та своєчасно допомагати союзникам. Перемога залежить не лише від індивідуального рівня, а й від правильної тактики та комунікації з командою.";
+        }
+
+        if (type === "valorant") {
+            title = "Урок: Valorant";
+            text = "Valorant поєднує точну стрільбу та унікальні здібності агентів. Для успішної гри потрібно правильно перевіряти кути, займати вигідні позиції, координувати дії з командою та грамотно використовувати здібності. Важливими є комунікація, контроль карти, знання ролей агентів та вміння швидко адаптуватися до ситуації під час раунду.";
+        }
+
+        document.getElementById("lessonTitle").innerText = title;
+        document.getElementById("lessonText").innerText = text;
+        document.getElementById("lessonBlock").classList.remove("hidden");
+    }
+</script>
+
+</body>
+</html>

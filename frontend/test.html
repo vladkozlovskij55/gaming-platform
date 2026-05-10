@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тести</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo" onclick="window.location.href='index.html'">GameStudy</div>
+    <div class="nav-buttons">
+        <button onclick="window.location.href='lessons.html'">Уроки</button>
+        <button onclick="window.location.href='test.html'">Тести</button>
+        <button onclick="window.location.href='profile.html'">Профіль</button>
+        <button onclick="window.location.href='rating.html'">Рейтинг</button>
+        <button onclick="openLoginModal()">Вхід</button>
+        <button onclick="openRegisterModal()">Реєстрація</button>
+        <button onclick="window.location.href='admin.html'">Адмін</button>
+    </div>
+</header>
+<div class="box">
+    <h2>Оберіть тест</h2>
+    <p style="color:#c6d0f5;">Пройдіть тестування та перевірте свій рівень знань.</p>
+
+    <div class="nav-buttons" style="justify-content:center; margin-top: 14px;">
+        <button onclick="startTest('cs2')">CS2</button>
+        <button onclick="startTest('dota2')">Dota 2</button>
+        <button onclick="startTest('valorant')">Valorant</button>
+    </div>
+
+    <div id="testBlock" class="hidden" style="margin-top: 24px;">
+        <h3 id="testTitle"></h3>
+        <p id="questionCounter" style="color:#c6d0f5;"></p>
+        <div id="questions"></div>
+        <p id="result"></p>
+        <button id="homeBtn" class="hidden" onclick="window.location.href='index.html'">На головну</button>
+    </div>
+
+    <p style="margin-top: 20px;"><a href="profile.html">Назад у профіль</a></p>
+</div>
+
+<script>
+    let questions = [];
+    let currentQuestion = 0;
+    let score = 0;
+    let currentTestType = "";
+
+    function startTest(type) {
+        currentTestType = type;
+        currentQuestion = 0;
+        score = 0;
+
+        if (type === "cs2") {
+            questions = [
+                { q: "Що найбільше покращує aim?", a: ["Практика", "Удача"], correct: 0 },
+                { q: "Що важливо для точної стрільби?", a: ["Реакція", "Випадковість"], correct: 0 },
+                { q: "Що допомагає краще контролювати зброю?", a: ["Контроль віддачі", "Гучність звуку"], correct: 0 },
+                { q: "Що потрібно робити для розвитку навички стрільби?", a: ["Регулярно тренуватись", "Лише дивитися відео"], correct: 0 },
+                { q: "Що впливає на успішний постріл у CS2?", a: ["Позиціонування", "Колір карти"], correct: 0 },
+                { q: "Що корисно для тренування aim?", a: ["Тренувальні карти", "Випадкові налаштування"], correct: 0 },
+                { q: "Що потрібно робити під час стрільби?", a: ["Контролювати приціл", "Не дивитися на екран"], correct: 0 },
+                { q: "Що важливіше для покращення гри?", a: ["Аналіз помилок", "Тільки новий скін"], correct: 0 },
+                { q: "Що покращує виживання у грі?", a: ["Швидка реакція", "Випадковий рух"], correct: 0 },
+                { q: "Яка навичка є ключовою у CS2?", a: ["Точність", "Удача"], correct: 0 }
+            ];
+            document.getElementById("testTitle").innerText = "CS2 Тест";
+        }
+
+        if (type === "dota2") {
+            questions = [
+                { q: "Що важливо в Dota 2?", a: ["Командна гра", "Лише удача"], correct: 0 },
+                { q: "Що потрібно для розвитку героя?", a: ["Фарм", "Випадковий рух"], correct: 0 },
+                { q: "Що означає роль героя?", a: ["Його завдання в команді", "Його колір"], correct: 0 },
+                { q: "Що допомагає виграти карту?", a: ["Контроль об'єктів", "Тільки швидкість миші"], correct: 0 },
+                { q: "Що важливо під час лінії?", a: ["Добивання крипів", "Ігнорування фарму"], correct: 0 },
+                { q: "Що впливає на успіх команди?", a: ["Комунікація", "Тільки випадок"], correct: 0 },
+                { q: "Що потрібно для сильного пізнього етапу гри?", a: ["Предмети та досвід", "Лише один герой"], correct: 0 },
+                { q: "Яка дія корисна для підтримки союзників?", a: ["Допомога на лініях", "Ігнорування команди"], correct: 0 },
+                { q: "Що потрібно робити на карті?", a: ["Слідкувати за ситуацією", "Не дивитися на мінікарту"], correct: 0 },
+                { q: "Що є основою перемоги в Dota 2?", a: ["Тактика та взаємодія", "Удача"], correct: 0 }
+            ];
+            document.getElementById("testTitle").innerText = "Dota 2 Тест";
+        }
+
+        if (type === "valorant") {
+            questions = [
+                { q: "Що важливо у Valorant?", a: ["Позиціонування", "Випадковість"], correct: 0 },
+                { q: "Що допомагає перемозі?", a: ["Командна гра", "Соло без плану"], correct: 0 },
+                { q: "Що потрібно перевіряти під час руху?", a: ["Кути", "Лише небо"], correct: 0 },
+                { q: "Що важливо в агентів?", a: ["Правильне використання здібностей", "Лише зовнішній вигляд"], correct: 0 },
+                { q: "Що допомагає утримувати точку?", a: ["Тактика", "Випадкові дії"], correct: 0 },
+                { q: "Що важливо при атаці?", a: ["Комунікація", "Мовчання"], correct: 0 },
+                { q: "Що впливає на результат раунду?", a: ["Контроль карти", "Тільки випадок"], correct: 0 },
+                { q: "Що потрібно для кращої оборони?", a: ["Займати правильні позиції", "Стояти без руху"], correct: 0 },
+                { q: "Що робити перед входом на сайт?", a: ["Узгодити дії з командою", "Йти по одному"], correct: 0 },
+                { q: "Що є основою успіху у Valorant?", a: ["Тактика та координація", "Удача"], correct: 0 }
+            ];
+            document.getElementById("testTitle").innerText = "Valorant Тест";
+        }
+
+        document.getElementById("result").innerText = "";
+        document.getElementById("homeBtn").classList.add("hidden");
+        document.getElementById("testBlock").classList.remove("hidden");
+
+        showQuestion();
+    }
+
+    function showQuestion() {
+        let q = questions[currentQuestion];
+
+        document.getElementById("questionCounter").innerText =
+            "Питання " + (currentQuestion + 1) + " з " + questions.length;
+
+        document.getElementById("questions").innerHTML = `
+            <p style="font-size:18px; margin-bottom:16px;">${q.q}</p>
+            <button class="answer-btn" onclick="answer(0)">${q.a[0]}</button>
+            <button class="answer-btn" onclick="answer(1)">${q.a[1]}</button>
+        `;
+    }
+
+    function answer(index) {
+        if (index === questions[currentQuestion].correct) {
+            score++;
+        }
+
+        currentQuestion++;
+
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            finishTest();
+        }
+    }
+
+    function finishTest() {
+        document.getElementById("questionCounter").innerText = "";
+        document.getElementById("questions").innerHTML = "";
+        document.getElementById("result").innerText =
+            "Ваш результат: " + score + " / " + questions.length;
+
+        document.getElementById("homeBtn").classList.remove("hidden");
+
+        let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+
+        if (!currentUser) {
+            return;
+        }
+
+        if (currentTestType === "cs2") {
+            currentUser.cs2_score = score;
+        }
+
+        if (currentTestType === "dota2") {
+            currentUser.dota2_score = score;
+        }
+
+        if (currentTestType === "valorant") {
+            currentUser.valorant_score = score;
+        }
+
+        let userIndex = users.findIndex(user => user.login === currentUser.login);
+
+        if (userIndex !== -1) {
+            users[userIndex] = currentUser;
+        }
+
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    }
+</script>
+
+</body>
+</html>

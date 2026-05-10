@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рейтинг</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo" onclick="window.location.href='index.html'">GameStudy</div>
+
+    <div class="nav-buttons">
+        <button onclick="window.location.href='lessons.html'">Уроки</button>
+        <button onclick="window.location.href='test.html'">Тести</button>
+        <button onclick="window.location.href='profile.html'">Профіль</button>
+        <button onclick="window.location.href='rating.html'">Рейтинг</button>
+        <button onclick="openLoginModal()">Вхід</button>
+        <button onclick="openRegisterModal()">Реєстрація</button>
+        <button onclick="window.location.href='admin.html'">Адмін</button>
+    </div>
+</header>
+
+<div class="box">
+    <h2>Рейтинг користувачів</h2>
+    <p style="color:#c6d0f5;">Порівняйте результати користувачів за підсумковими балами.</p>
+
+    <div id="ratingList" style="margin-top: 20px;"></div>
+
+    <p style="margin-top: 20px;"><a href="index.html">Повернутися на головну</a></p>
+</div>
+
+<script>
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    users.forEach(user => {
+        user.totalScore =
+            (user.cs2_score || 0) +
+            (user.dota2_score || 0) +
+            (user.valorant_score || 0);
+    });
+
+    users.sort((a, b) => b.totalScore - a.totalScore);
+
+    let html = "";
+
+    if (users.length > 0) {
+        users.forEach((user, index) => {
+            html += `
+                <div class="course-item" style="text-align:left; margin-bottom:12px;">
+                    <h4 style="margin:0 0 8px 0;">${index + 1}. ${user.login}</h4>
+                    <p style="margin:0; color:#c6d0f5;">
+                        Загальний бал: ${user.totalScore}<br>
+                        CS2: ${user.cs2_score || 0} |
+                        Dota 2: ${user.dota2_score || 0} |
+                        Valorant: ${user.valorant_score || 0}
+                    </p>
+                </div>
+            `;
+        });
+    } else {
+        html = `<p style="color:#c6d0f5;">Ще немає користувачів для рейтингу</p>`;
+    }
+
+    document.getElementById("ratingList").innerHTML = html;
+</script>
+
+</body>
+</html>
