@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const pool = require("../db");
-const authMiddleware = require("../middleware/authMiddleware");
+const pool = require("../db.js");
+const authMiddleware = require("../middleware/authMiddleware.js");
 
 // получить курсы
 router.get("/", async (req, res) => {
