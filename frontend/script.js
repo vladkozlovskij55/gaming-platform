@@ -1,4 +1,4 @@
-const API = "http://localhost:5000";
+const API = "https://gaming-platform-tydb.onrender.com";
 
 // ================= РЕГИСТРАЦИЯ =================
 function registerUser() {
