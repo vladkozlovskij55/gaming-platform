@@ -822,3 +822,155 @@ button:hover {
 .hero-actions button:nth-child(2) {
     animation: fadeUp 1.05s ease both;
 }
+html {
+    scroll-behavior: smooth;
+}
+
+/* LOADER */
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #050814;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#loader.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader-logo {
+    font-size: 34px;
+    font-weight: 800;
+    color: white;
+    animation: pulseGlow 1.4s infinite;
+}
+
+/* BACKGROUND */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(124, 92, 255, 0.22), transparent 30%),
+        radial-gradient(circle at 80% 40%, rgba(78, 161, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 50% 90%, rgba(46, 229, 157, 0.1), transparent 30%);
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.25;
+}
+
+/* PARTICLES */
+.particles span {
+    position: fixed;
+    bottom: -80px;
+    width: 8px;
+    height: 8px;
+    background: rgba(124, 92, 255, 0.8);
+    border-radius: 50%;
+    box-shadow: 0 0 18px rgba(124, 92, 255, 0.9);
+    animation: floatParticle 12s linear infinite;
+    z-index: -1;
+}
+
+.particles span:nth-child(1) { left: 10%; animation-delay: 0s; }
+.particles span:nth-child(2) { left: 30%; animation-delay: 2s; }
+.particles span:nth-child(3) { left: 50%; animation-delay: 4s; }
+.particles span:nth-child(4) { left: 70%; animation-delay: 1s; }
+.particles span:nth-child(5) { left: 90%; animation-delay: 3s; }
+
+/* NAVBAR GLOW */
+header {
+    animation: navDrop 0.7s ease both;
+}
+
+.nav-buttons button:hover,
+button:hover {
+    box-shadow:
+        0 0 14px rgba(124, 92, 255, 0.55),
+        0 0 28px rgba(78, 161, 255, 0.35);
+}
+
+/* CARDS */
+.card,
+.feature-card,
+.stat-card,
+.step-card,
+.review-card,
+.faq-item,
+.news-card,
+.box {
+    transition: 0.3s ease;
+}
+
+.card:hover,
+.feature-card:hover,
+.stat-card:hover,
+.step-card:hover,
+.review-card:hover,
+.faq-item:hover,
+.news-card:hover {
+    transform: translateY(-7px) scale(1.01);
+    border-color: rgba(124, 92, 255, 0.45);
+    box-shadow:
+        0 16px 40px rgba(0, 0, 0, 0.35),
+        0 0 24px rgba(124, 92, 255, 0.18);
+}
+
+/* HERO */
+.hero h1 {
+    background: linear-gradient(90deg, #ffffff, #8ec5ff, #c45bff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ANIMATIONS */
+@keyframes pulseGlow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(124, 92, 255, 0.6);
+        transform: scale(1);
+    }
+    50% {
+        text-shadow: 0 0 28px rgba(124, 92, 255, 1);
+        transform: scale(1.06);
+    }
+}
+
+@keyframes floatParticle {
+    from {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-110vh) scale(1.8);
+        opacity: 0;
+    }
+}
+
+@keyframes navDrop {
+    from {
+        opacity: 0;
+        transform: translateY(-18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

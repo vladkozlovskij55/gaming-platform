@@ -170,3 +170,12 @@ window.onload = function() {
     if (document.getElementById("myCoursesContainer")) loadMyCourses();
     if (document.getElementById("resultsContainer")) loadResults();
 };
+window.addEventListener("load", function () {
+    const loader = document.getElementById("loader");
+
+    if (loader) {
+        setTimeout(() => {
+            loader.classList.add("hide");
+        }, 700);
+    }
+});
