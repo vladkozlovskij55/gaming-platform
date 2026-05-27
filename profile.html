@@ -27,6 +27,23 @@
 <div class="box">
     <h2>Особистий кабінет</h2>
     <h2>Мої курси</h2>
+    <div class="profile-header">
+    <div class="profile-avatar-big">🎮</div>
+    <div>
+        <h3 id="profileLogin">Гравець</h3>
+        <p id="profileLevel">Рівень 1</p>
+    </div>
+</div>
+
+<div class="xp-box">
+    <p id="xpText">XP: 0 / 100</p>
+    <div class="xp-line">
+        <div id="xpFill"></div>
+    </div>
+</div>
+
+<h3>Досягнення</h3>
+<div id="achievements"></div>
 <div id="myCoursesContainer"></div>
 <h2>Мої результати</h2>
 <div id="resultsContainer"></div>
@@ -105,6 +122,39 @@
         localStorage.removeItem("currentUser");
         window.location.href = "login.html";
     }
+    let totalScore =
+    (user.cs2_score || 0) +
+    (user.dota2_score || 0) +
+    (user.valorant_score || 0);
+
+let level = Math.floor(totalScore / 100) + 1;
+let xp = totalScore % 100;
+
+document.getElementById("profileLogin").innerText = user.login;
+document.getElementById("profileLevel").innerText = "Рівень " + level;
+document.getElementById("xpText").innerText = "XP: " + xp + " / 100";
+document.getElementById("xpFill").style.width = xp + "%";
+
+let achievements = [];
+
+if (user.myCourses && user.myCourses.length > 0) {
+    achievements.push("🎓 Перший курс");
+}
+
+if (totalScore >= 10) {
+    achievements.push("🧠 Перший тест");
+}
+
+if (totalScore >= 20) {
+    achievements.push("🔥 Активний гравець");
+}
+
+if (achievements.length === 0) {
+    achievements.push("Поки немає досягнень");
+}
+
+document.getElementById("achievements").innerHTML =
+    achievements.map(a => `<div class="achievement-card">${a}</div>`).join("");
 </script>
 
 </body>
