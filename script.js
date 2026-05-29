@@ -205,3 +205,32 @@ window.addEventListener("load", function () {
         animateCounters();
     }
 });
+function animateCounters() {
+    const counters = document.querySelectorAll(".counter");
+
+    counters.forEach(counter => {
+        const target = Number(counter.dataset.target);
+
+        let count = 0;
+        const speed = target / 50;
+
+        const updateCount = () => {
+            count += speed;
+
+            if (count < target) {
+                counter.innerText = Math.floor(count);
+                requestAnimationFrame(updateCount);
+            } else {
+                if (target === 100) {
+                    counter.innerText = target + "%";
+                } else {
+                    counter.innerText = target + "+";
+                }
+            }
+        };
+
+        updateCount();
+    });
+}
+
+window.addEventListener("load", animateCounters);

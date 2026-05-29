@@ -1033,3 +1033,8 @@ button:hover {
 .counter {
     text-shadow: 0 0 18px rgba(124, 92, 255, 0.55);
 }
+.counter {
+    color: #7c5cff;
+    text-shadow: 0 0 15px rgba(124,92,255,0.7);
+    transition: 0.3s;
+}
