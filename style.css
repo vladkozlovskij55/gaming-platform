@@ -1030,3 +1030,6 @@ button:hover {
     color: white;
     font-weight: 700;
 }
+.counter {
+    text-shadow: 0 0 18px rgba(124, 92, 255, 0.55);
+}

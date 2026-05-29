@@ -179,3 +179,29 @@ window.addEventListener("load", function () {
         }, 700);
     }
 });
+function animateCounters() {
+    const counters = document.querySelectorAll(".counter");
+
+    counters.forEach(counter => {
+        const target = Number(counter.getAttribute("data-target"));
+        let current = 0;
+        const step = Math.ceil(target / 60);
+
+        const timer = setInterval(() => {
+            current += step;
+
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+
+            counter.innerText = target === 100 ? current + "%" : current + "+";
+        }, 20);
+    });
+}
+
+window.addEventListener("load", function () {
+    if (document.querySelector(".counter")) {
+        animateCounters();
+    }
+});
