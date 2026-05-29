@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профіль</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
@@ -14,147 +14,91 @@
     <div class="logo" onclick="window.location.href='index.html'">GameStudy</div>
 
     <div class="nav-buttons">
+        <button onclick="window.location.href='index.html'">Головна</button>
         <button onclick="window.location.href='lessons.html'">Уроки</button>
         <button onclick="window.location.href='test.html'">Тести</button>
-        <button onclick="window.location.href='profile.html'">Профіль</button>
         <button onclick="window.location.href='rating.html'">Рейтинг</button>
-        <button onclick="openLoginModal()">Вхід</button>
-        <button onclick="openRegisterModal()">Реєстрація</button>
-        <button onclick="window.location.href='admin.html'">Адмін</button>
+        <button class="logout" onclick="logout()">Вийти</button>
     </div>
 </header>
 
-<div class="box">
+<div class="box profile-page">
     <h2>Особистий кабінет</h2>
-    <h2>Мої курси</h2>
+
     <div class="profile-header">
-    <div class="profile-avatar-big">🎮</div>
-    <div>
-        <h3 id="profileLogin">Гравець</h3>
-        <p id="profileLevel">Рівень 1</p>
+        <div class="profile-avatar-big">🎮</div>
+        <div>
+            <h3 id="profileLogin">Гравець</h3>
+            <p id="profileLevel">Рівень 1</p>
+        </div>
     </div>
-</div>
 
-<div class="xp-box">
-    <p id="xpText">XP: 0 / 100</p>
-    <div class="xp-line">
-        <div id="xpFill"></div>
+    <div class="xp-box">
+        <p id="xpText">XP: 0 / 100</p>
+        <div class="xp-line">
+            <div id="xpFill"></div>
+        </div>
     </div>
-</div>
 
-<h3>Досягнення</h3>
-<div id="achievements"></div>
-<div id="myCoursesContainer"></div>
-<h2>Мої результати</h2>
-<div id="resultsContainer"></div>
-    <p id="userLogin"></p>
-    <p id="scores"></p>
+    <h3>Досягнення</h3>
+    <div id="achievements"></div>
 
     <h3>Мої курси</h3>
-    <div id="myCourses"></div>
+    <div id="myCoursesContainer"></div>
+
+    <h3>Мої результати</h3>
+    <div id="resultsContainer"></div>
 
     <div class="nav-buttons" style="margin-top: 18px;">
         <button onclick="window.location.href='test.html'">Пройти тест</button>
         <button onclick="window.location.href='rating.html'">Переглянути рейтинг</button>
-        <button class="logout" onclick="logout()">Вийти</button>
     </div>
 
-    <p style="margin-top: 20px;"><a href="index.html">Повернутися на головну</a></p>
+    <p style="margin-top: 20px;">
+        <a href="index.html">Повернутися на головну</a>
+    </p>
 </div>
 
+<script src="./script.js"></script>
+
 <script>
-    let user = JSON.parse(localStorage.getItem("currentUser"));
+    const user = JSON.parse(localStorage.getItem("currentUser"));
 
     if (!user) {
-        window.location.href = "login.html";
-    } else {
-        document.getElementById("userLogin").innerText = "Ваш логін: " + user.login;
+        window.location.href = "index.html";
     }
 
-    document.getElementById("scores").innerText =
-        "CS2: " + (user.cs2_score ?? 0) +
-        " | Dota 2: " + (user.dota2_score ?? 0) +
-        " | Valorant: " + (user.valorant_score ?? 0);
+    const totalScore =
+        (user.cs2_score || 0) +
+        (user.dota2_score || 0) +
+        (user.valorant_score || 0);
 
-    let container = document.getElementById("myCourses");
+    const level = Math.floor(totalScore / 100) + 1;
+    const xp = totalScore % 100;
 
-    if (user.myCourses && user.myCourses.length > 0) {
-        let html = '<div class="my-courses">';
+    document.getElementById("profileLogin").innerText = user.login;
+    document.getElementById("profileLevel").innerText = "Рівень " + level;
+    document.getElementById("xpText").innerText = "XP: " + xp + " / 100";
+    document.getElementById("xpFill").style.width = xp + "%";
 
-        user.myCourses.forEach(course => {
-            html += `
-                <div class="my-card">
-                    <h4>${course}</h4>
-                    <button class="delete" onclick="removeCourse('${course}')">Видалити</button>
-                </div>
-            `;
-        });
+    const achievements = [];
 
-        html += '</div>';
-        container.innerHTML = html;
-    } else {
-        container.innerHTML = "<p style='color:#c6d0f5;'>Ви ще не записалися на курси</p>";
+    if (totalScore >= 10) achievements.push("🧠 Перший тест");
+    if (totalScore >= 20) achievements.push("🔥 Активний гравець");
+    if (totalScore >= 50) achievements.push("🏆 Сильний результат");
+
+    if (achievements.length === 0) {
+        achievements.push("Поки немає досягнень");
     }
 
-    function removeCourse(courseName) {
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-        if (!currentUser.myCourses) {
-            currentUser.myCourses = [];
-        }
-
-        currentUser.myCourses = currentUser.myCourses.filter(c => c !== courseName);
-
-        let index = users.findIndex(u => u.login === currentUser.login);
-
-        if (index !== -1) {
-            users[index] = currentUser;
-        }
-
-        localStorage.setItem("users", JSON.stringify(users));
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
-
-        location.reload();
-    }
+    document.getElementById("achievements").innerHTML =
+        achievements.map(a => `<div class="achievement-card">${a}</div>`).join("");
 
     function logout() {
         localStorage.removeItem("currentUser");
-        window.location.href = "login.html";
+        localStorage.removeItem("token");
+        window.location.href = "index.html";
     }
-    let totalScore =
-    (user.cs2_score || 0) +
-    (user.dota2_score || 0) +
-    (user.valorant_score || 0);
-
-let level = Math.floor(totalScore / 100) + 1;
-let xp = totalScore % 100;
-
-document.getElementById("profileLogin").innerText = user.login;
-document.getElementById("profileLevel").innerText = "Рівень " + level;
-document.getElementById("xpText").innerText = "XP: " + xp + " / 100";
-document.getElementById("xpFill").style.width = xp + "%";
-
-let achievements = [];
-
-if (user.myCourses && user.myCourses.length > 0) {
-    achievements.push("🎓 Перший курс");
-}
-
-if (totalScore >= 10) {
-    achievements.push("🧠 Перший тест");
-}
-
-if (totalScore >= 20) {
-    achievements.push("🔥 Активний гравець");
-}
-
-if (achievements.length === 0) {
-    achievements.push("Поки немає досягнень");
-}
-
-document.getElementById("achievements").innerHTML =
-    achievements.map(a => `<div class="achievement-card">${a}</div>`).join("");
 </script>
 
 </body>
