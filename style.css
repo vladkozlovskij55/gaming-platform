@@ -1139,3 +1139,39 @@ button:hover {
     border-top: 1px solid rgba(255,255,255,0.08);
     color: #8b949e;
 }
+.courses-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:25px;
+    margin-top:30px;
+}
+
+.course-card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:20px;
+    padding:25px;
+    transition:0.3s;
+}
+
+.course-card:hover{
+    transform:translateY(-8px);
+}
+
+.course-card h3{
+    color:#7c5cff;
+    margin-bottom:15px;
+}
+
+.course-card p{
+    margin-bottom:20px;
+}
+
+.course-card button{
+    background:#7c5cff;
+    border:none;
+    color:white;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+}
