@@ -4,6 +4,7 @@ const ADMIN_CREDENTIALS = {
     password: "admin",
     email: "admin@gmail.com"
 };
+let loadedCourses = [];
 
 function getStoredUsers() {
     return JSON.parse(localStorage.getItem("users")) || [];
@@ -234,7 +235,8 @@ function renderCourses(courses) {
     if (!container) return;
 
     if (!courses || courses.length === 0) {
-        container.innerHTML = "<p class='muted-text'>Курси поки недоступні</p>";
+        const query = document.getElementById("searchInput")?.value.trim();
+        container.innerHTML = `<p class='muted-text'>${query ? "Курсів за вашим запитом не знайдено" : "Курси поки недоступні"}</p>`;
         return;
     }
 
@@ -265,6 +267,7 @@ async function loadCourses() {
         }
 
         const courses = await response.json();
+        loadedCourses = courses;
         renderCourses(courses);
     } catch (error) {
         container.innerHTML = "<p class='muted-text'>Не вдалося завантажити курси з API</p>";
@@ -273,6 +276,19 @@ async function loadCourses() {
 
 function searchCourses() {
     const query = document.getElementById("searchInput")?.value.toLowerCase().trim() || "";
+    const container = document.getElementById("courseContainer");
+
+    if (!container) return;
+
+    if (loadedCourses.length > 0) {
+        const filteredCourses = loadedCourses.filter(course => {
+            const searchableText = `${getCourseTitle(course)} ${course.description || ""}`.toLowerCase();
+            return searchableText.includes(query);
+        });
+
+        renderCourses(filteredCourses);
+        return;
+    }
 
     document.querySelectorAll("#courseContainer .card").forEach(card => {
         card.style.display = card.innerText.toLowerCase().includes(query) ? "" : "none";
