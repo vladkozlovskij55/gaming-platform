@@ -3070,7 +3070,99 @@ input:focus,
     }
 }
 
+.pwa-install-section {
+    margin-top: 30px;
+}
+
+.pwa-install-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 22px;
+    align-items: center;
+    padding: 28px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 229, 255, 0.28);
+    border-radius: 18px;
+    background:
+        linear-gradient(135deg, rgba(0, 229, 255, 0.16), rgba(255, 31, 113, 0.10)),
+        rgba(8, 12, 28, 0.9);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.34), 0 0 34px rgba(0, 229, 255, 0.12);
+}
+
+.pwa-install-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.12), transparent);
+    transform: translateX(-100%);
+    animation: pwaScan 5s linear infinite;
+}
+
+.pwa-install-card h2 {
+    margin: 8px 0 10px;
+    color: #ffffff;
+    font-size: clamp(24px, 4vw, 36px);
+}
+
+.pwa-install-card p {
+    max-width: 680px;
+    margin: 0;
+    color: rgba(238, 245, 255, 0.78);
+    line-height: 1.65;
+}
+
+.pwa-install-btn {
+    position: relative;
+    z-index: 1;
+    min-width: 260px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #00e5ff, #ff1f71);
+    box-shadow: 0 14px 34px rgba(0, 229, 255, 0.2);
+}
+
+.pwa-install-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 18px 42px rgba(255, 31, 113, 0.28);
+}
+
+@keyframes pwaScan {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@media (display-mode: standalone) {
+    body {
+        min-height: 100vh;
+    }
+
+    header {
+        padding-top: max(14px, env(safe-area-inset-top));
+    }
+}
+
 @media (max-width: 767px) {
+    html {
+        scroll-padding-top: 86px;
+    }
+
+    body {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    input,
+    textarea,
+    button {
+        font-size: 16px;
+    }
+
     header {
         position: sticky;
         flex-direction: row;
@@ -3154,6 +3246,25 @@ input:focus,
 
     .hero-actions button {
         min-width: 0;
+    }
+
+    .pwa-install-card {
+        grid-template-columns: 1fr;
+        padding: 22px;
+    }
+
+    .pwa-install-btn {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .profile-page,
+    .lessons-page,
+    .test-page,
+    .rating-page,
+    .admin-page {
+        width: min(100% - 24px, 620px);
+        padding-bottom: max(24px, env(safe-area-inset-bottom));
     }
 
     .card {

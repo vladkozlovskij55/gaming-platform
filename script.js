@@ -717,6 +717,45 @@ function animateCounters() {
     });
 }
 
+let deferredInstallPrompt = null;
+
+function setupPwaInstall() {
+    const installButton = document.getElementById("installAppBtn");
+
+    if (!installButton) {
+        return;
+    }
+
+    installButton.addEventListener("click", async function () {
+        if (!deferredInstallPrompt) {
+            alert("Якщо встановлення недоступне, відкрийте меню браузера та оберіть встановлення застосунку.");
+            return;
+        }
+
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        installButton.classList.add("hidden");
+    });
+}
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./service-worker.js").catch(function () {});
+    });
+}
+
+window.addEventListener("beforeinstallprompt", function (event) {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    document.getElementById("installAppBtn")?.classList.remove("hidden");
+});
+
+window.addEventListener("appinstalled", function () {
+    deferredInstallPrompt = null;
+    document.getElementById("installAppBtn")?.classList.add("hidden");
+});
+
 window.openLoginModal = openLoginModal;
 window.closeLoginModal = closeLoginModal;
 window.openRegisterModal = openRegisterModal;
@@ -739,6 +778,7 @@ window.addEventListener("load", function () {
     loadCourses();
     loadMyCourses();
     loadResults();
+    setupPwaInstall();
 
     document.querySelector("header .nav-buttons")?.addEventListener("click", function (event) {
         if (event.target.closest("button")) {

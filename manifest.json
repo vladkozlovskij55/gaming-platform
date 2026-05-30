@@ -1,0 +1,21 @@
+{
+  "name": "GameStudy",
+  "short_name": "GameStudy",
+  "description": "Мобільний навчальний застосунок для геймерів з уроками, тестами, рейтингом і профілем користувача.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#070912",
+  "theme_color": "#00e5ff",
+  "categories": ["education", "games"],
+  "lang": "uk",
+  "icons": [
+    {
+      "src": "./icons/gamestudy-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
