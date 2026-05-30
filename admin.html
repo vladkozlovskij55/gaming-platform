@@ -86,6 +86,33 @@
         </section>
     </section>
 
+    <section class="admin-users-panel">
+        <div class="profile-panel-head admin-users-head">
+            <div>
+                <span class="profile-kicker">Player Database</span>
+                <h2>Користувачі</h2>
+            </div>
+            <input type="search" id="adminUserSearch" placeholder="Пошук за логіном або email" oninput="renderAdminUsers()">
+        </div>
+
+        <div class="admin-users-table-wrap">
+            <table class="admin-users-table">
+                <thead>
+                    <tr>
+                        <th>Логін</th>
+                        <th>Email</th>
+                        <th>Роль</th>
+                        <th>Курси</th>
+                        <th>Тести</th>
+                        <th>Бали</th>
+                        <th>Дія</th>
+                    </tr>
+                </thead>
+                <tbody id="adminUsersTable"></tbody>
+            </table>
+        </div>
+    </section>
+
     <p class="test-back-link"><a href="index.html">Повернутися на головну</a></p>
 </main>
 
@@ -124,14 +151,37 @@
         return (JSON.parse(localStorage.getItem("users")) || []).length;
     }
 
+    function getAdminStoredUsers() {
+        return JSON.parse(localStorage.getItem("users")) || [];
+    }
+
+    function saveAdminStoredUsers(users) {
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function escapeAdminHtml(value) {
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    function getUserTestsCount(user) {
+        return [user.cs2_score, user.dota2_score, user.valorant_score]
+            .filter(score => Number(score) > 0).length;
+    }
+
+    function getUserTotalScore(user) {
+        return Number(user.cs2_score || 0) + Number(user.dota2_score || 0) + Number(user.valorant_score || 0);
+    }
+
     function getStoredResultsCount() {
-        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const users = getAdminStoredUsers();
         const parsedResults = JSON.parse(localStorage.getItem("results")) || [];
         const storedResults = Array.isArray(parsedResults) ? parsedResults : [];
-        const scoreResults = users.reduce((total, user) => {
-            return total + [user.cs2_score, user.dota2_score, user.valorant_score]
-                .filter(score => Number(score) > 0).length;
-        }, 0);
+        const scoreResults = users.reduce((total, user) => total + getUserTestsCount(user), 0);
 
         return Math.max(storedResults.length, scoreResults);
     }
@@ -140,6 +190,62 @@
         document.getElementById("adminCoursesCount").innerText = courses.length;
         document.getElementById("adminUsersCount").innerText = getStoredUsersCount();
         document.getElementById("adminResultsCount").innerText = getStoredResultsCount();
+    }
+
+    function renderAdminUsers() {
+        const table = document.getElementById("adminUsersTable");
+        if (!table) return;
+
+        const query = document.getElementById("adminUserSearch")?.value.toLowerCase().trim() || "";
+        const users = getAdminStoredUsers();
+        const filteredUsers = users.filter(user => {
+            const text = `${user.login || ""} ${user.email || ""} ${user.role || ""}`.toLowerCase();
+            return text.includes(query);
+        });
+
+        table.innerHTML = filteredUsers.length ? filteredUsers.map(user => {
+            const login = user.login || "player";
+            const testsCount = getUserTestsCount(user);
+            const coursesCount = Array.isArray(user.myCourses) ? user.myCourses.length : 0;
+            const totalScore = getUserTotalScore(user);
+            const isCurrentUser = currentUser?.login === login;
+            const encodedLogin = encodeURIComponent(login);
+
+            return `
+                <tr>
+                    <td data-label="Логін"><strong>${escapeAdminHtml(login)}</strong></td>
+                    <td data-label="Email">${escapeAdminHtml(user.email || `${login}@gamestudy.local`)}</td>
+                    <td data-label="Роль"><span class="admin-role-pill">${escapeAdminHtml(user.role || "user")}</span></td>
+                    <td data-label="Курси">${coursesCount}</td>
+                    <td data-label="Тести">${testsCount}</td>
+                    <td data-label="Бали">${totalScore}</td>
+                    <td data-label="Дія">
+                        <button class="delete admin-user-delete" ${isCurrentUser ? "disabled" : ""} onclick="deleteAdminUser(decodeURIComponent('${encodedLogin}'))">Видалити</button>
+                    </td>
+                </tr>
+            `;
+        }).join("") : `
+            <tr>
+                <td colspan="7" class="admin-empty-users">Користувачів не знайдено</td>
+            </tr>
+        `;
+
+        updateAdminStats();
+    }
+
+    function deleteAdminUser(login) {
+        if (currentUser?.login === login) {
+            alert("Не можна видалити поточного адміністратора");
+            return;
+        }
+
+        if (!confirm(`Видалити користувача ${login}?`)) {
+            return;
+        }
+
+        const users = getAdminStoredUsers().filter(user => user.login !== login);
+        saveAdminStoredUsers(users);
+        renderAdminUsers();
     }
 
     function renderAdminCourses() {
@@ -214,6 +320,7 @@
     }
 
 renderAdminCourses();
+renderAdminUsers();
 </script>
 <script src="./script.js"></script>
 

@@ -2207,7 +2207,8 @@ input:focus,
 }
 
 .admin-form-panel,
-.admin-courses-panel {
+.admin-courses-panel,
+.admin-users-panel {
     padding: 22px;
     border: 1px solid var(--border);
     border-radius: 20px;
@@ -2283,6 +2284,99 @@ input:focus,
     grid-column: 1 / -1;
     flex-wrap: wrap;
     gap: 10px;
+}
+
+.admin-users-panel {
+    margin-top: 22px;
+}
+
+.admin-users-head {
+    align-items: center;
+    gap: 16px;
+}
+
+.admin-users-head input {
+    width: min(360px, 100%);
+    margin: 0;
+}
+
+.admin-users-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid rgba(0, 229, 255, 0.16);
+    border-radius: 16px;
+    background:
+        linear-gradient(135deg, rgba(0, 229, 255, 0.08), transparent 34%),
+        rgba(255, 255, 255, 0.035);
+}
+
+.admin-users-table {
+    width: 100%;
+    min-width: 780px;
+    border-collapse: collapse;
+}
+
+.admin-users-table th,
+.admin-users-table td {
+    padding: 15px 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.admin-users-table th {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 950;
+    text-transform: uppercase;
+    background: rgba(0, 229, 255, 0.07);
+}
+
+.admin-users-table td {
+    color: var(--muted);
+}
+
+.admin-users-table tbody tr {
+    transition: background 0.22s ease, box-shadow 0.22s ease;
+}
+
+.admin-users-table tbody tr:hover {
+    background: rgba(255, 43, 214, 0.08);
+    box-shadow: inset 3px 0 0 rgba(0, 229, 255, 0.72);
+}
+
+.admin-users-table strong {
+    color: #ffffff;
+}
+
+.admin-role-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 6px 10px;
+    border: 1px solid rgba(156, 255, 63, 0.28);
+    border-radius: 999px;
+    color: var(--accent-3);
+    font-size: 12px;
+    font-weight: 950;
+    text-transform: uppercase;
+    background: rgba(156, 255, 63, 0.08);
+}
+
+.admin-user-delete {
+    min-height: 36px;
+    padding: 9px 12px;
+}
+
+.admin-user-delete:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+    filter: grayscale(0.4);
+}
+
+.admin-empty-users {
+    padding: 24px !important;
+    text-align: center !important;
+    color: var(--muted);
 }
 
 .footer {
@@ -2716,7 +2810,8 @@ input:focus,
 
     .admin-hero,
     .admin-form-panel,
-    .admin-courses-panel {
+    .admin-courses-panel,
+    .admin-users-panel {
         border-radius: 18px;
     }
 
@@ -2729,8 +2824,63 @@ input:focus,
     }
 
     .admin-form-panel,
-    .admin-courses-panel {
+    .admin-courses-panel,
+    .admin-users-panel {
         padding: 18px;
+    }
+
+    .admin-users-head {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .admin-users-table {
+        min-width: 0;
+    }
+
+    .admin-users-table thead {
+        display: none;
+    }
+
+    .admin-users-table,
+    .admin-users-table tbody,
+    .admin-users-table tr,
+    .admin-users-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-users-table tr {
+        padding: 12px;
+        border-bottom: 1px solid rgba(0, 229, 255, 0.14);
+    }
+
+    .admin-users-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        text-align: right;
+    }
+
+    .admin-users-table td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 950;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .admin-users-table td:last-child {
+        border-bottom: 0;
+    }
+
+    .admin-user-delete {
+        width: auto;
+        min-width: 130px;
     }
 
     .admin-course-card {
