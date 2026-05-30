@@ -975,27 +975,6 @@ input:focus,
     text-align: center;
 }
 
-.footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 30px;
-    max-width: 1200px;
-    margin: auto;
-    padding: 40px 20px;
-}
-
-.footer-section h3 {
-    margin-bottom: 12px;
-    color: var(--accent);
-}
-
-.footer-section p,
-.footer-section a {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--muted);
-}
-
 .feature-card,
 .stat-card,
 .step-card,
