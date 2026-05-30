@@ -92,6 +92,23 @@
         dota2: "Dota 2",
         valorant: "Valorant"
     };
+    const extraQuestions = {
+        cs2: [
+            { q: "Що краще робити перед виходом на точку?", a: ["Кинути utility разом з командою", "Бігти без інформації"], correct: 0 },
+            { q: "Що допомагає виграти retake?", a: ["Синхронний вхід", "Одиночний push"], correct: 0 },
+            { q: "Що важливо для стабільного spray control?", a: ["Тренування патернів", "Зміна скіна"], correct: 0 }
+        ],
+        dota2: [
+            { q: "Що дає команді хороший vision?", a: ["Інформацію для рішень", "Лише красиву карту"], correct: 0 },
+            { q: "Коли carry краще заходити у fight?", a: ["Після ключових spells суперника", "Першим без підтримки"], correct: 0 },
+            { q: "Що допомагає виграти Roshan fight?", a: ["Vision і позиція", "Випадковий рух"], correct: 0 }
+        ],
+        valorant: [
+            { q: "Що важливо у post-plant?", a: ["Грати від часу", "Одразу покинути spike"], correct: 0 },
+            { q: "Що покращує перший duel?", a: ["Crosshair placement", "Випадковий spray"], correct: 0 },
+            { q: "Що потрібно для якісного retake?", a: ["Командний вхід з utility", "Заходити по одному"], correct: 0 }
+        ]
+    };
 
     function startTest(type) {
         currentTestType = type;
@@ -146,6 +163,7 @@
             document.getElementById("testTitle").innerText = "Valorant Тест";
         }
 
+        questions = [...questions, ...(extraQuestions[type] || [])];
         document.getElementById("result").innerHTML = "";
         document.getElementById("scorePreview").innerText = "0 XP";
         document.getElementById("resultActions").classList.add("hidden");

@@ -39,7 +39,7 @@
         </div>
         <div class="lessons-hero-stat">
             <span>Lessons</span>
-            <strong>3</strong>
+            <strong>9</strong>
             <p>активні напрямки</p>
         </div>
     </section>
@@ -94,6 +94,66 @@
             level: "Просунутий",
             duration: "20 хв",
             text: "Valorant поєднує точну стрільбу та унікальні здібності агентів. Для успішної гри потрібно правильно перевіряти кути, займати вигідні позиції, координувати дії з командою та грамотно використовувати здібності. Важливими є комунікація, контроль карти, знання ролей агентів та вміння швидко адаптуватися до ситуації під час раунду."
+        },
+        {
+            id: "cs2-smokes",
+            type: "cs2",
+            game: "CS2",
+            title: "Utility: smokes, flashes та retake",
+            description: "Практичний урок про гранати, вихід на точку та повернення контролю після plant.",
+            level: "Просунутий",
+            duration: "24 хв",
+            text: "У CS2 utility вирішує раунд ще до першого контакту. Важливо знати базові smoke, flash і molotov для виходу на точку, а також домовлятися з командою про таймінги. Для retake спершу збирайте інформацію, відрізайте позиції суперника гранатами і заходьте разом."
+        },
+        {
+            id: "cs2-economy",
+            type: "cs2",
+            game: "CS2",
+            title: "Економіка та buy rounds",
+            description: "Як планувати закуп, eco, force-buy і не ламати економіку команди.",
+            level: "Базовий",
+            duration: "16 хв",
+            text: "Економіка CS2 допомагає команді грати стабільно. Не купуйте окремо від команди, рахуйте гроші союзників і вирішуйте разом: eco, force-buy або full-buy."
+        },
+        {
+            id: "dota2-wards",
+            type: "dota2",
+            game: "Dota 2",
+            title: "Vision, wards та контроль карти",
+            description: "Урок про огляд, deward, smoke move і безпечний фарм.",
+            level: "Середній",
+            duration: "19 хв",
+            text: "Vision у Dota 2 відкриває карту і дозволяє приймати кращі рішення. Ставте wards під цілі команди: Roshan, tower push або захист carry. Deward позбавляє суперника інформації."
+        },
+        {
+            id: "dota2-teamfight",
+            type: "dota2",
+            game: "Dota 2",
+            title: "Teamfight та позиціонування",
+            description: "Як починати бій, кого фокусити і де стояти різним ролям.",
+            level: "Просунутий",
+            duration: "25 хв",
+            text: "У командному бою важливо розуміти свою роль. Initiator починає fight, support тримає сейви, carry заходить тоді, коли небезпечні spells уже витрачені."
+        },
+        {
+            id: "valorant-crosshair",
+            type: "valorant",
+            game: "Valorant",
+            title: "Crosshair placement та peeking",
+            description: "Тренування прицілу на рівні голови, swing, jiggle peek і prefire.",
+            level: "Базовий",
+            duration: "17 хв",
+            text: "У Valorant приціл має чекати суперника ще до того, як він з'явиться. Тримайте crosshair на рівні голови, перевіряйте кути короткими peeks і використовуйте prefire обережно."
+        },
+        {
+            id: "valorant-postplant",
+            type: "valorant",
+            game: "Valorant",
+            title: "Post-plant та retake",
+            description: "Як грати після встановлення spike і як правильно повертати site.",
+            level: "Середній",
+            duration: "21 хв",
+            text: "Після plant займіть crossfire, контролюйте defuse і грайте від часу. У retake дочекайтеся команди, використайте utility для очищення кутів і заходьте синхронно."
         }
     ];
     let currentLessonFilter = "all";
@@ -123,19 +183,19 @@
                     <span>${lesson.level}</span>
                     <span>${lesson.duration}</span>
                 </div>
-                <button onclick="showLesson('${lesson.type}')">Почати урок</button>
+                <button onclick="showLesson('${lesson.id || lesson.type}')">Почати урок</button>
             </article>
         `).join("") : "<p class='muted-text empty-leaderboard'>Уроків за вашим запитом не знайдено</p>";
     }
 
     function showLesson(type) {
-        const lesson = lessons.find(item => item.type === type);
+        const lesson = lessons.find(item => item.id === type || item.type === type);
         if (!lesson) return;
 
         document.getElementById("lessonTitle").innerText = `Урок: ${lesson.game}`;
         document.getElementById("lessonText").innerText = lesson.text;
         document.getElementById("lessonBlock").classList.remove("hidden");
-        markLessonCompleted(type);
+        markLessonCompleted(lesson.id || lesson.type);
     }
 
     function markLessonCompleted(type) {

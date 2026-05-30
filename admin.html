@@ -280,10 +280,10 @@
         error.classList.add("hidden");
 
         if (editIndex === -1) {
-            courses.push({ name, description, image });
+            courses.push({ id: Date.now(), name, title: name, description, image });
             alert("Курс додано!");
         } else {
-            courses[editIndex] = { name, description, image };
+            courses[editIndex] = { ...courses[editIndex], name, title: name, description, image };
             alert("Курс оновлено!");
             editIndex = -1;
             document.getElementById("adminFormTitle").innerText = "Додати курс";
@@ -318,6 +318,13 @@
     function saveCourses() {
         localStorage.setItem("courses", JSON.stringify(courses));
     }
+
+window.addCourse = addCourse;
+window.editCourse = editCourse;
+window.deleteCourse = deleteCourse;
+window.renderAdminCourses = renderAdminCourses;
+window.renderAdminUsers = renderAdminUsers;
+window.deleteAdminUser = deleteAdminUser;
 
 renderAdminCourses();
 renderAdminUsers();

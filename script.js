@@ -225,10 +225,8 @@ function closeAccountMenu() {
 }
 
 function updateAdminNavVisibility() {
-    const currentUser = getCurrentUser();
-
     document.querySelectorAll(".admin-nav-button").forEach(button => {
-        button.classList.toggle("hidden", currentUser?.role !== "admin");
+        button.classList.add("hidden");
     });
 }
 
@@ -455,9 +453,21 @@ function renderCourses(courses) {
     }).join("");
 }
 
+function normalizeLocalCourse(course, index = 0) {
+    return {
+        ...course,
+        id: course.id || `local-${index + 1}-${Date.now()}`,
+        title: course.title || course.name || "Course",
+        description: course.description || "",
+        image: course.image || ""
+    };
+}
+
 async function loadCourses() {
     const container = document.getElementById("courseContainer");
     if (!container) return;
+
+    const localCourses = (JSON.parse(localStorage.getItem("courses")) || []).map(normalizeLocalCourse);
 
     try {
         const response = await fetch(`${API}/courses`);
@@ -467,11 +477,11 @@ async function loadCourses() {
         }
 
         const courses = await response.json();
-        loadedCourses = courses;
-        renderCourses(courses);
+        loadedCourses = [...localCourses, ...courses];
+        renderCourses(loadedCourses);
     } catch (error) {
-        loadedCourses = FALLBACK_COURSES;
-        renderCourses(FALLBACK_COURSES);
+        loadedCourses = localCourses.length ? localCourses : FALLBACK_COURSES;
+        renderCourses(loadedCourses);
     }
 }
 
