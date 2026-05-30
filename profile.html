@@ -157,18 +157,83 @@
     document.getElementById("xpFill").style.width = xp + "%";
     renderAvatar();
 
-    const achievements = [];
+    const completedCoursesCount = Math.max((user.myCourses || []).length, user.completedLessons.length);
+    const completedTestsCount = user.completedTests.length;
+    const passedTestResults = [user.cs2_score, user.dota2_score, user.valorant_score]
+        .filter(score => Number(score) > 0).length;
+    const achievementList = [
+        {
+            icon: "🎮",
+            title: "Перший курс",
+            description: "Почати перший навчальний курс",
+            unlocked: completedCoursesCount >= 1
+        },
+        {
+            icon: "🧠",
+            title: "Перший тест",
+            description: "Пройти будь-який тест",
+            unlocked: completedTestsCount >= 1 || passedTestResults >= 1
+        },
+        {
+            icon: "⚡",
+            title: "50 балів",
+            description: "Набрати 50 загальних балів",
+            unlocked: totalScore >= 50
+        },
+        {
+            icon: "🏆",
+            title: "100 балів",
+            description: "Набрати 100 загальних балів",
+            unlocked: totalScore >= 100
+        },
+        {
+            icon: "📚",
+            title: "3 курси",
+            description: "Завершити або додати 3 курси",
+            unlocked: completedCoursesCount >= 3
+        },
+        {
+            icon: "✅",
+            title: "Усі тести пройдені",
+            description: "Мати результати з CS2, Dota 2 і Valorant",
+            unlocked: passedTestResults >= 3
+        },
+        {
+            icon: "🎯",
+            title: "CS2 старт",
+            description: "Отримати результат у CS2",
+            unlocked: Number(user.cs2_score) > 0
+        },
+        {
+            icon: "🛡️",
+            title: "Dota 2 старт",
+            description: "Отримати результат у Dota 2",
+            unlocked: Number(user.dota2_score) > 0
+        },
+        {
+            icon: "🔫",
+            title: "Valorant старт",
+            description: "Отримати результат у Valorant",
+            unlocked: Number(user.valorant_score) > 0
+        },
+        {
+            icon: "💎",
+            title: "Елітний гравець",
+            description: "Досягти 200 загальних балів",
+            unlocked: totalScore >= 200
+        }
+    ];
 
-    if (totalScore >= 10) achievements.push("🧠 Перший тест");
-    if (totalScore >= 20) achievements.push("🔥 Активний гравець");
-    if (totalScore >= 50) achievements.push("🏆 Сильний результат");
-
-    if (achievements.length === 0) {
-        achievements.push("Поки немає досягнень");
-    }
-
-    document.getElementById("achievements").innerHTML =
-        achievements.map(a => `<div class="achievement-card">${a}</div>`).join("");
+    document.getElementById("achievements").innerHTML = achievementList.map(achievement => `
+        <div class="achievement-card ${achievement.unlocked ? "unlocked" : "locked"}">
+            <span class="achievement-icon">${achievement.icon}</span>
+            <div class="achievement-info">
+                <h4>${achievement.title}</h4>
+                <p>${achievement.description}</p>
+                <strong>${achievement.unlocked ? "Відкрито" : "Заблоковано"}</strong>
+            </div>
+        </div>
+    `).join("");
 
     function saveProfile() {
         user.name = document.getElementById("profileNameInput").value.trim() || user.name;
