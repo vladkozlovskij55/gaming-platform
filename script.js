@@ -1,4 +1,9 @@
 const API = "https://gaming-platform-tydb.onrender.com";
+const ADMIN_CREDENTIALS = {
+    login: "admin",
+    password: "admin",
+    email: "admin@gmail.com"
+};
 
 function getStoredUsers() {
     return JSON.parse(localStorage.getItem("users")) || [];
@@ -44,6 +49,22 @@ function saveCurrentUser(user, profile = {}) {
     saveStoredUsers(users);
     localStorage.setItem("currentUser", JSON.stringify(normalizedUser));
     return normalizedUser;
+}
+
+function saveAdminUser() {
+    localStorage.setItem("token", "local-admin-token");
+    return saveCurrentUser(
+        {
+            login: ADMIN_CREDENTIALS.login,
+            role: "admin"
+        },
+        {
+            name: "Admin",
+            email: ADMIN_CREDENTIALS.email,
+            login: ADMIN_CREDENTIALS.login,
+            role: "admin"
+        }
+    );
 }
 
 function getCurrentUser() {
@@ -105,6 +126,17 @@ async function registerUser() {
         return;
     }
 
+    if (login.toLowerCase() === ADMIN_CREDENTIALS.login) {
+        if (password !== ADMIN_CREDENTIALS.password) {
+            alert("Для admin використовуйте пароль admin");
+            return;
+        }
+
+        saveAdminUser();
+        window.location.href = "profile.html";
+        return;
+    }
+
     try {
         const registerResponse = await fetch(`${API}/auth/register`, {
             method: "POST",
@@ -152,6 +184,12 @@ async function loginUser() {
 
     if (!login || !password) {
         alert("Введіть логін і пароль");
+        return;
+    }
+
+    if (login.toLowerCase() === ADMIN_CREDENTIALS.login && password === ADMIN_CREDENTIALS.password) {
+        saveAdminUser();
+        window.location.href = "profile.html";
         return;
     }
 
