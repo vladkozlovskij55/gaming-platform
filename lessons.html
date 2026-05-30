@@ -65,6 +65,27 @@
         document.getElementById("lessonTitle").innerText = title;
         document.getElementById("lessonText").innerText = text;
         document.getElementById("lessonBlock").classList.remove("hidden");
+        markLessonCompleted(type);
+    }
+
+    function markLessonCompleted(type) {
+        let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!currentUser) return;
+
+        currentUser.completedLessons = currentUser.completedLessons || [];
+        if (!currentUser.completedLessons.includes(type)) {
+            currentUser.completedLessons.push(type);
+        }
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        let userIndex = users.findIndex(user => user.login === currentUser.login);
+
+        if (userIndex !== -1) {
+            users[userIndex] = currentUser;
+            localStorage.setItem("users", JSON.stringify(users));
+        }
+
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
     }
 </script>
 

@@ -26,10 +26,24 @@
     <h2>Особистий кабінет</h2>
 
     <div class="profile-header">
-        <div class="profile-avatar-big">🎮</div>
+        <div class="profile-avatar-big" id="profileAvatar">GS</div>
         <div>
-            <h3 id="profileLogin">Гравець</h3>
+            <h3 id="profileName">Гравець</h3>
+            <p id="profileEmail">player@gamestudy.local</p>
+            <p id="profileLogin">@player</p>
             <p id="profileLevel">Рівень 1</p>
+        </div>
+    </div>
+
+    <div class="profile-stats-grid">
+        <div class="profile-stat-card">
+            <span id="completedLessonsCount">0</span>
+            <p>Пройдено уроков</p>
+        </div>
+
+        <div class="profile-stat-card">
+            <span id="completedTestsCount">0</span>
+            <p>Пройдено тестов</p>
         </div>
     </div>
 
@@ -49,6 +63,14 @@
     <h3>Мої результати</h3>
     <div id="resultsContainer"></div>
 
+    <h3>Данные профиля</h3>
+    <div class="profile-form">
+        <input type="text" id="profileNameInput" placeholder="Имя">
+        <input type="email" id="profileEmailInput" placeholder="Email">
+        <input type="url" id="profileAvatarInput" placeholder="URL аватара">
+        <button onclick="saveProfile()">Сохранить профиль</button>
+    </div>
+
     <div class="nav-buttons" style="margin-top: 18px;">
         <button onclick="window.location.href='test.html'">Пройти тест</button>
         <button onclick="window.location.href='rating.html'">Переглянути рейтинг</button>
@@ -62,11 +84,17 @@
 <script src="./script.js"></script>
 
 <script>
-    const user = JSON.parse(localStorage.getItem("currentUser"));
+    let user = JSON.parse(localStorage.getItem("currentUser"));
 
     if (!user) {
         window.location.href = "index.html";
     }
+
+    user.name = user.name || user.login || "Player";
+    user.email = user.email || `${user.login || "player"}@gamestudy.local`;
+    user.avatar = user.avatar || "";
+    user.completedLessons = user.completedLessons || [];
+    user.completedTests = user.completedTests || [];
 
     const totalScore =
         (user.cs2_score || 0) +
@@ -76,10 +104,27 @@
     const level = Math.floor(totalScore / 100) + 1;
     const xp = totalScore % 100;
 
-    document.getElementById("profileLogin").innerText = user.login;
+    function renderAvatar() {
+        const avatar = document.getElementById("profileAvatar");
+        if (user.avatar) {
+            avatar.innerHTML = `<img src="${user.avatar}" alt="${user.name}">`;
+        } else {
+            avatar.textContent = (user.name || user.login || "GS").trim().slice(0, 2).toUpperCase();
+        }
+    }
+
+    document.getElementById("profileName").innerText = user.name;
+    document.getElementById("profileEmail").innerText = user.email;
+    document.getElementById("profileLogin").innerText = "@" + user.login;
     document.getElementById("profileLevel").innerText = "Рівень " + level;
+    document.getElementById("completedLessonsCount").innerText = user.completedLessons.length;
+    document.getElementById("completedTestsCount").innerText = user.completedTests.length;
+    document.getElementById("profileNameInput").value = user.name;
+    document.getElementById("profileEmailInput").value = user.email;
+    document.getElementById("profileAvatarInput").value = user.avatar;
     document.getElementById("xpText").innerText = "XP: " + xp + " / 100";
     document.getElementById("xpFill").style.width = xp + "%";
+    renderAvatar();
 
     const achievements = [];
 
@@ -93,6 +138,29 @@
 
     document.getElementById("achievements").innerHTML =
         achievements.map(a => `<div class="achievement-card">${a}</div>`).join("");
+
+    function saveProfile() {
+        user.name = document.getElementById("profileNameInput").value.trim() || user.name;
+        user.email = document.getElementById("profileEmailInput").value.trim() || user.email;
+        user.avatar = document.getElementById("profileAvatarInput").value.trim();
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        let userIndex = users.findIndex(item => item.login === user.login);
+
+        if (userIndex !== -1) {
+            users[userIndex] = user;
+        } else {
+            users.push(user);
+        }
+
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("currentUser", JSON.stringify(user));
+
+        document.getElementById("profileName").innerText = user.name;
+        document.getElementById("profileEmail").innerText = user.email;
+        renderAvatar();
+        alert("Профиль сохранён");
+    }
 
     function logout() {
         localStorage.removeItem("currentUser");

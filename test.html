@@ -163,6 +163,11 @@
             currentUser.valorant_score = score;
         }
 
+        currentUser.completedTests = currentUser.completedTests || [];
+        if (!currentUser.completedTests.includes(currentTestType)) {
+            currentUser.completedTests.push(currentTestType);
+        }
+
         let userIndex = users.findIndex(user => user.login === currentUser.login);
 
         if (userIndex !== -1) {

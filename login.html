@@ -48,6 +48,11 @@ function loginUser() {
     );
 
     if (foundUser) {
+        foundUser.name = foundUser.name || foundUser.login || "Player";
+        foundUser.email = foundUser.email || `${foundUser.login || "player"}@gamestudy.local`;
+        foundUser.avatar = foundUser.avatar || "";
+        foundUser.completedLessons = foundUser.completedLessons || [];
+        foundUser.completedTests = foundUser.completedTests || [];
         localStorage.setItem("currentUser", JSON.stringify(foundUser));
         alert("Вхід успішний!");
         window.location.href = "profile.html";

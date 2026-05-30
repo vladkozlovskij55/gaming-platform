@@ -1,27 +1,94 @@
 const API = "https://gaming-platform-tydb.onrender.com";
 
+function normalizeUser(user) {
+    if (!user) return null;
+
+    user.name = user.name || user.login || "Player";
+    user.email = user.email || `${user.login || "player"}@gamestudy.local`;
+    user.avatar = user.avatar || "";
+    user.completedLessons = user.completedLessons || [];
+    user.completedTests = user.completedTests || [];
+    user.myCourses = user.myCourses || [];
+
+    return user;
+}
+
+function getStoredUsers() {
+    return JSON.parse(localStorage.getItem("users")) || [];
+}
+
+function saveStoredUsers(users) {
+    localStorage.setItem("users", JSON.stringify(users));
+}
+
+function saveCurrentUser(user) {
+    const normalizedUser = normalizeUser(user);
+    let users = getStoredUsers();
+    const index = users.findIndex(item => item.login === normalizedUser.login);
+
+    if (index !== -1) {
+        users[index] = normalizedUser;
+    } else {
+        users.push(normalizedUser);
+    }
+
+    saveStoredUsers(users);
+    localStorage.setItem("currentUser", JSON.stringify(normalizedUser));
+}
+
 // ================= РЕГИСТРАЦИЯ =================
 function registerUser() {
-    const login = document.getElementById("registerLogin").value;
+    const name = document.getElementById("registerName")?.value.trim() || "";
+    const email = document.getElementById("registerEmail")?.value.trim() || "";
+    const avatar = document.getElementById("registerAvatar")?.value.trim() || "";
+    const login = document.getElementById("registerLogin").value.trim();
     const password = document.getElementById("registerPassword").value;
 
-    fetch(`${API}/auth/register`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ login, password })
-    })
-    .then(res => res.json())
-    .then(() => {
-        alert("Реєстрація успішна");
+    if (!name || !email || !login || !password) {
+        alert("Заполните имя, email, логин и пароль");
+        return;
+    }
+
+    const users = getStoredUsers();
+    const exists = users.find(user => user.login === login);
+
+    if (exists) {
+        alert("Такой пользователь уже существует");
+        return;
+    }
+
+    const newUser = normalizeUser({
+        name,
+        email,
+        avatar,
+        login,
+        password,
+        role: login === "admin" ? "admin" : "user",
+        cs2_score: 0,
+        dota2_score: 0,
+        valorant_score: 0
     });
+
+    users.push(newUser);
+    saveStoredUsers(users);
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+    alert("Регистрация успешна");
+    window.location.href = "profile.html";
 }
 
 // ================= ВХОД =================
 function loginUser() {
-    const login = document.getElementById("loginInput").value;
+    const login = document.getElementById("loginInput").value.trim();
     const password = document.getElementById("passwordInput").value;
+    const users = getStoredUsers();
+    const storedUser = users.find(user => user.login === login && user.password === password);
+
+    if (storedUser) {
+        saveCurrentUser(storedUser);
+        window.location.href = "profile.html";
+        return;
+    }
 
     fetch(`${API}/auth/login`, {
         method: "POST",
@@ -36,7 +103,7 @@ function loginUser() {
     })
     .then(data => {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("currentUser", JSON.stringify(data.user));
+        saveCurrentUser(data.user);
         window.location.href = "profile.html";
     })
     .catch(() => alert("Помилка входу"));
@@ -93,29 +160,40 @@ function enrollCourse(courseId) {
 
 // ================= МОИ КУРСЫ =================
 function loadMyCourses() {
-    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const user = normalizeUser(JSON.parse(localStorage.getItem("currentUser")));
     if (!user) return;
 
-    fetch(`${API}/courses/my/${user.id}`)
-    .then(res => res.json())
-    .then(data => {
+    const renderCourses = (data) => {
         let html = "";
 
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             html = "<p>У вас поки немає курсів</p>";
         } else {
             data.forEach(course => {
+                const title = course.title || course.name || course;
+                const description = course.description || "Збережений курс користувача";
+
                 html += `
                     <div class="card">
-                        <h3>${course.title}</h3>
-                        <p>${course.description}</p>
+                        <h3>${title}</h3>
+                        <p>${description}</p>
                     </div>
                 `;
             });
         }
 
         document.getElementById("myCoursesContainer").innerHTML = html;
-    });
+    };
+
+    if (!user.id) {
+        renderCourses(user.myCourses);
+        return;
+    }
+
+    fetch(`${API}/courses/my/${user.id}`)
+    .then(res => res.json())
+    .then(renderCourses)
+    .catch(() => renderCourses(user.myCourses));
 }
 
 // ================= СОХРАНЕНИЕ РЕЗУЛЬТАТА =================
@@ -139,15 +217,19 @@ function saveResult(game, score) {
 
 // ================= РЕЗУЛЬТАТЫ =================
 function loadResults() {
-    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const user = normalizeUser(JSON.parse(localStorage.getItem("currentUser")));
     if (!user) return;
 
-    fetch(`${API}/results/${user.id}`)
-    .then(res => res.json())
-    .then(data => {
+    const localResults = [
+        { game: "CS2", score: user.cs2_score || 0 },
+        { game: "Dota 2", score: user.dota2_score || 0 },
+        { game: "Valorant", score: user.valorant_score || 0 }
+    ].filter(result => result.score > 0 || user.completedTests.includes(result.game.toLowerCase().replace(" ", "")));
+
+    const renderResults = (data) => {
         let html = "";
 
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             html = "<p>Немає результатів</p>";
         } else {
             data.forEach(r => {
@@ -161,7 +243,17 @@ function loadResults() {
         }
 
         document.getElementById("resultsContainer").innerHTML = html;
-    });
+    };
+
+    if (!user.id) {
+        renderResults(localResults);
+        return;
+    }
+
+    fetch(`${API}/results/${user.id}`)
+    .then(res => res.json())
+    .then(renderResults)
+    .catch(() => renderResults(localResults));
 }
 
 // ================= АВТОЗАГРУЗКА =================

@@ -27,6 +27,9 @@
     <h2>Створення акаунта</h2>
     <p style="color:#c6d0f5;">Зареєструйтеся, щоб отримати доступ до курсів, тестів і особистого кабінету.</p>
 
+    <input type="text" id="name" placeholder="Имя">
+    <input type="email" id="email" placeholder="Email">
+    <input type="url" id="avatar" placeholder="URL аватара (необязательно)">
     <input type="text" id="login" placeholder="Логін">
     <input type="password" id="password" placeholder="Пароль">
 
@@ -37,10 +40,13 @@
 
 <script>
 function registerUser() {
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let avatar = document.getElementById("avatar").value.trim();
     let login = document.getElementById("login").value;
     let password = document.getElementById("password").value;
 
-    if (login === "" || password === "") {
+    if (name === "" || email === "" || login === "" || password === "") {
         alert("Заповніть всі поля");
         return;
     }
@@ -55,12 +61,17 @@ function registerUser() {
     }
 
     let newUser = {
+        name: name,
+        email: email,
+        avatar: avatar,
         login: login,
         password: password,
         role: login === "admin" ? "admin" : "user",
         cs2_score: 0,
         dota2_score: 0,
         valorant_score: 0,
+        completedLessons: [],
+        completedTests: [],
         myCourses: []
     };
 

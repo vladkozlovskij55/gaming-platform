@@ -807,11 +807,55 @@ input:focus,
     height: 82px;
     border-radius: 22px;
     font-size: 34px;
+    overflow: hidden;
 }
 
 .profile-header h3,
 .profile-header p {
     margin: 0;
+}
+
+.profile-avatar-big img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 22px 0;
+}
+
+.profile-stat-card {
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.08);
+}
+
+.profile-stat-card span {
+    display: block;
+    color: var(--accent-3);
+    font-size: 38px;
+    font-weight: 950;
+    line-height: 1;
+    text-shadow: 0 0 18px rgba(156, 255, 63, 0.34);
+}
+
+.profile-stat-card p {
+    margin: 8px 0 0;
+    color: var(--muted);
+}
+
+.profile-form {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
 }
 
 .xp-box {
@@ -1160,6 +1204,10 @@ input:focus,
         align-items: center;
         flex-direction: column;
         text-align: center;
+    }
+
+    .profile-stats-grid {
+        grid-template-columns: 1fr;
     }
 
     .leaderboard-item {
