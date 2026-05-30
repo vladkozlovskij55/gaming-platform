@@ -24,23 +24,64 @@
     </div>
 </header>
 
-<div class="box">
-    <h2>Адмін панель</h2>
-    <p style="color:#c6d0f5;">Керуйте курсами платформи: додавайте, редагуйте та видаляйте контент.</p>
+<main class="admin-page">
+    <section class="admin-hero">
+        <div>
+            <span class="profile-kicker">GameStudy Control Center</span>
+            <h1>Адмін панель</h1>
+            <p>Керуйте курсами платформи: додавайте, редагуйте та видаляйте контент.</p>
+        </div>
+        <div class="admin-hero-card">
+            <span>Status</span>
+            <strong>Admin</strong>
+            <p>dashboard mode</p>
+        </div>
+    </section>
 
-    <input type="text" id="courseName" placeholder="Назва курсу">
-    <input type="text" id="courseDescription" placeholder="Опис курсу">
-    <input type="text" id="courseImage" placeholder="Посилання на зображення">
+    <section class="admin-stats-grid">
+        <div class="admin-stat-card">
+            <span id="adminCoursesCount">0</span>
+            <p>Курсів</p>
+        </div>
+        <div class="admin-stat-card">
+            <span id="adminUsersCount">0</span>
+            <p>Користувачів</p>
+        </div>
+        <div class="admin-stat-card">
+            <span id="adminResultsCount">0</span>
+            <p>Результатів тестів</p>
+        </div>
+    </section>
 
-    <div class="nav-buttons" style="justify-content:center; margin-top: 14px;">
-        <button onclick="addCourse()">Зберегти курс</button>
-    </div>
+    <section class="admin-dashboard-grid">
+        <form class="admin-form-panel" onsubmit="addCourse(); return false;">
+            <div class="profile-panel-head">
+                <h2 id="adminFormTitle">Додати курс</h2>
+            </div>
 
-    <h3 style="margin-top: 28px;">Список курсів</h3>
-    <div id="courseList"></div>
+            <label for="courseName">Назва курсу</label>
+            <input type="text" id="courseName" placeholder="Наприклад: CS2 Aim">
 
-    <p style="margin-top: 20px;"><a href="index.html">Повернутися на головну</a></p>
-</div>
+            <label for="courseDescription">Опис курсу</label>
+            <textarea id="courseDescription" placeholder="Короткий опис курсу"></textarea>
+
+            <label for="courseImage">Зображення курсу</label>
+            <input type="url" id="courseImage" placeholder="https://...">
+
+            <p id="adminFormError" class="form-error hidden">Заповніть назву та опис курсу</p>
+            <button id="adminSubmitBtn" type="submit">Додати курс</button>
+        </form>
+
+        <section class="admin-courses-panel">
+            <div class="profile-panel-head">
+                <h2>Список курсів</h2>
+            </div>
+            <div id="courseList" class="admin-course-list"></div>
+        </section>
+    </section>
+
+    <p class="test-back-link"><a href="index.html">Повернутися на головну</a></p>
+</main>
 
 <script>
     let currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -69,37 +110,60 @@
     ];
 
     let editIndex = -1;
+    const defaultCourseImage = "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80";
+
+    function getStoredUsersCount() {
+        return (JSON.parse(localStorage.getItem("users")) || []).length;
+    }
+
+    function getStoredResultsCount() {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const parsedResults = JSON.parse(localStorage.getItem("results")) || [];
+        const storedResults = Array.isArray(parsedResults) ? parsedResults : [];
+        const scoreResults = users.reduce((total, user) => {
+            return total + [user.cs2_score, user.dota2_score, user.valorant_score]
+                .filter(score => Number(score) > 0).length;
+        }, 0);
+
+        return Math.max(storedResults.length, scoreResults);
+    }
+
+    function updateAdminStats() {
+        document.getElementById("adminCoursesCount").innerText = courses.length;
+        document.getElementById("adminUsersCount").innerText = getStoredUsersCount();
+        document.getElementById("adminResultsCount").innerText = getStoredResultsCount();
+    }
 
     function renderCourses() {
-        let html = "";
-
-        courses.forEach((course, index) => {
-            html += `
-                <div class="course-item" style="text-align:left; margin-bottom:14px;">
-                    <img src="${course.image}" alt="${course.name}" style="width:100%; height:160px; object-fit:cover; border-radius:14px; margin-bottom:12px;">
-                    <h4 style="margin:0 0 8px 0;">${course.name}</h4>
-                    <p style="margin:0 0 12px 0; color:#c6d0f5;">${course.description}</p>
-
-                    <div class="nav-buttons" style="justify-content:flex-start;">
-                        <button onclick="editCourse(${index})">Редагувати</button>
-                        <button class="delete" onclick="deleteCourse(${index})">Видалити</button>
-                    </div>
+        document.getElementById("courseList").innerHTML = courses.length ? courses.map((course, index) => `
+            <article class="admin-course-card">
+                <img src="${course.image || defaultCourseImage}" alt="${course.name}">
+                <div>
+                    <span>Course #${index + 1}</span>
+                    <h3>${course.name}</h3>
+                    <p>${course.description}</p>
                 </div>
-            `;
-        });
-
-        document.getElementById("courseList").innerHTML = html;
+                <div class="admin-card-actions">
+                    <button onclick="editCourse(${index})">Редагувати</button>
+                    <button class="delete" onclick="deleteCourse(${index})">Видалити</button>
+                </div>
+            </article>
+        `).join("") : "<p class='muted-text empty-leaderboard'>Курсів поки що немає</p>";
+        updateAdminStats();
     }
 
     function addCourse() {
-        let name = document.getElementById("courseName").value;
-        let description = document.getElementById("courseDescription").value;
-        let image = document.getElementById("courseImage").value;
+        let name = document.getElementById("courseName").value.trim();
+        let description = document.getElementById("courseDescription").value.trim();
+        let image = document.getElementById("courseImage").value.trim() || defaultCourseImage;
+        let error = document.getElementById("adminFormError");
 
-        if (name === "" || description === "" || image === "") {
-            alert("Заповніть всі поля");
+        if (name === "" || description === "") {
+            error.classList.remove("hidden");
             return;
         }
+
+        error.classList.add("hidden");
 
         if (editIndex === -1) {
             courses.push({ name, description, image });
@@ -108,6 +172,8 @@
             courses[editIndex] = { name, description, image };
             alert("Курс оновлено!");
             editIndex = -1;
+            document.getElementById("adminFormTitle").innerText = "Додати курс";
+            document.getElementById("adminSubmitBtn").innerText = "Додати курс";
         }
 
         saveCourses();
@@ -123,6 +189,10 @@
         document.getElementById("courseDescription").value = courses[index].description;
         document.getElementById("courseImage").value = courses[index].image;
         editIndex = index;
+        document.getElementById("adminFormTitle").innerText = "Редагувати курс";
+        document.getElementById("adminSubmitBtn").innerText = "Зберегти зміни";
+        document.getElementById("adminFormError").classList.add("hidden");
+        document.querySelector(".admin-form-panel").scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function deleteCourse(index) {
