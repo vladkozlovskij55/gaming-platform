@@ -181,6 +181,13 @@ function getAvatarLabel(user) {
     return (user?.name || user?.login || "GS").trim().slice(0, 2).toUpperCase();
 }
 
+function isUsableAvatar(avatar) {
+    if (!avatar) return false;
+
+    const value = String(avatar).trim();
+    return /^https?:\/\//i.test(value) || /^data:image\/[a-z0-9.+-]+;base64,.{80,}/i.test(value);
+}
+
 function escapeHtml(value) {
     return String(value ?? "")
         .replaceAll("&", "&amp;")
@@ -222,7 +229,8 @@ function updateAuthNavigation() {
     if (!nav) return;
 
     const buttons = [...nav.querySelectorAll("button")];
-    const profileButton = buttons.find(button => (button.getAttribute("onclick") || "").includes("profile.html"));
+    let profileButton = buttons.find(button => (button.getAttribute("onclick") || "").includes("profile.html"));
+    const ratingButton = buttons.find(button => (button.getAttribute("onclick") || "").includes("rating.html"));
     const loginButton = buttons.find(button => {
         const action = button.getAttribute("onclick") || "";
         return action.includes("login.html") || action.includes("openLoginModal");
@@ -233,6 +241,10 @@ function updateAuthNavigation() {
     });
 
     document.querySelector(".account-menu")?.remove();
+
+    if (profileButton && ratingButton && ratingButton.nextElementSibling !== profileButton) {
+        nav.insertBefore(profileButton, ratingButton.nextElementSibling);
+    }
 
     if (!currentUser) {
         if (profileButton) {
@@ -248,9 +260,19 @@ function updateAuthNavigation() {
     loginButton?.classList.add("hidden");
     registerButton?.classList.add("hidden");
 
-    if (!profileButton) return;
+    if (!profileButton) {
+        profileButton = document.createElement("button");
+        profileButton.setAttribute("onclick", "window.location.href='profile.html'");
+        profileButton.textContent = "Профіль";
 
-    const avatarContent = currentUser.avatar
+        if (ratingButton) {
+            nav.insertBefore(profileButton, ratingButton.nextElementSibling);
+        } else {
+            nav.appendChild(profileButton);
+        }
+    }
+
+    const avatarContent = isUsableAvatar(currentUser.avatar)
         ? `<img src="${escapeHtml(currentUser.avatar)}" alt="${escapeHtml(currentUser.login)}">`
         : `<span>${escapeHtml(getAvatarLabel(currentUser))}</span>`;
 
