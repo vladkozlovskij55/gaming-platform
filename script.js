@@ -69,6 +69,24 @@ function closeRegisterModal() {
     document.getElementById("registerModal")?.classList.add("hidden");
 }
 
+function toggleBurgerMenu() {
+    const header = document.querySelector("header");
+    const button = document.querySelector(".burger-menu");
+
+    if (!header || !button) return;
+
+    const isOpen = header.classList.toggle("menu-open");
+    button.setAttribute("aria-expanded", String(isOpen));
+}
+
+function closeBurgerMenu() {
+    const header = document.querySelector("header");
+    const button = document.querySelector(".burger-menu");
+
+    header?.classList.remove("menu-open");
+    button?.setAttribute("aria-expanded", "false");
+}
+
 async function registerUser() {
     const name = document.getElementById("registerName")?.value.trim() || "";
     const email = document.getElementById("registerEmail")?.value.trim() || "";
@@ -363,6 +381,7 @@ window.loginUser = loginUser;
 window.searchCourses = searchCourses;
 window.enrollCourse = enrollCourse;
 window.closeModal = closeModal;
+window.toggleBurgerMenu = toggleBurgerMenu;
 
 window.addEventListener("load", function () {
     hideLoader();
@@ -370,7 +389,19 @@ window.addEventListener("load", function () {
     loadMyCourses();
     loadResults();
 
+    document.querySelector("header .nav-buttons")?.addEventListener("click", function (event) {
+        if (event.target.closest("button")) {
+            closeBurgerMenu();
+        }
+    });
+
     if (document.querySelector(".counter")) {
         animateCounters();
+    }
+});
+
+window.addEventListener("resize", function () {
+    if (window.innerWidth >= 768) {
+        closeBurgerMenu();
     }
 });

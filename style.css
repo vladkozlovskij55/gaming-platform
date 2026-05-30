@@ -101,6 +101,41 @@ header {
     animation: navDrop 0.65s ease both;
 }
 
+.burger-menu {
+    display: none;
+    width: 46px;
+    height: 42px;
+    min-height: 42px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 12px;
+}
+
+.burger-menu span {
+    display: block;
+    width: 21px;
+    height: 2px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.55);
+    transition: transform 0.24s ease, opacity 0.24s ease;
+}
+
+header.menu-open .burger-menu span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+header.menu-open .burger-menu span:nth-child(2) {
+    opacity: 0;
+}
+
+header.menu-open .burger-menu span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
 .logo {
     position: relative;
     flex: 0 0 auto;
@@ -361,6 +396,17 @@ button:active {
     gap: 12px;
 }
 
+.hero-actions button {
+    min-width: 190px;
+    min-height: 48px;
+    border-radius: 12px;
+    letter-spacing: 0;
+}
+
+.hero-actions button:hover {
+    transform: translateY(-4px) scale(1.02);
+}
+
 .search-wrap {
     margin-top: 22px;
 }
@@ -443,6 +489,7 @@ input:focus,
 .news-grid,
 .courses {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
 }
 
 .faq-list,
@@ -605,6 +652,10 @@ input:focus,
 
 .card {
     padding: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 280px;
 }
 
 .card img,
@@ -631,6 +682,10 @@ input:focus,
 .card p {
     min-height: 48px;
     margin: 0 0 15px;
+}
+
+.card button {
+    margin-top: auto;
 }
 
 .box {
@@ -1200,6 +1255,63 @@ input:focus,
 
     #modalImage {
         height: 210px;
+    }
+}
+
+@media (max-width: 767px) {
+    header {
+        position: sticky;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .burger-menu {
+        display: flex;
+        flex: 0 0 auto;
+        margin-left: auto;
+    }
+
+    header .nav-buttons {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        top: calc(100% + 10px);
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        width: auto;
+        max-height: 0;
+        padding: 0;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+        border: 1px solid rgba(0, 229, 255, 0);
+        border-radius: 16px;
+        background: rgba(5, 8, 18, 0.96);
+        box-shadow: 0 22px 55px rgba(0, 0, 0, 0.46);
+        backdrop-filter: blur(16px);
+        transition: max-height 0.28s ease, opacity 0.24s ease, padding 0.24s ease, border-color 0.24s ease;
+    }
+
+    header.menu-open .nav-buttons {
+        max-height: 520px;
+        padding: 12px;
+        opacity: 1;
+        pointer-events: auto;
+        border-color: rgba(0, 229, 255, 0.24);
+    }
+
+    .hero-content {
+        padding: 44px 20px 38px;
+    }
+
+    .hero-actions button {
+        min-width: 0;
+    }
+
+    .card {
+        min-height: 250px;
     }
 }
 
