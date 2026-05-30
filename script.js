@@ -17,6 +17,7 @@ function normalizeUser(user, profile = {}) {
         ...user,
         ...profile,
         login,
+        role: profile.role || user.role || (login.toLowerCase() === "admin" ? "admin" : "user"),
         name: profile.name || user.name || login,
         email: profile.email || user.email || `${login}@gamestudy.local`,
         avatar: profile.avatar || user.avatar || "",
@@ -132,7 +133,13 @@ async function registerUser() {
 
         const loginData = await loginResponse.json();
         localStorage.setItem("token", loginData.token);
-        saveCurrentUser(loginData.user || registeredUser, { name, email, avatar, login });
+        saveCurrentUser(loginData.user || registeredUser, {
+            name,
+            email,
+            avatar,
+            login,
+            role: login.toLowerCase() === "admin" ? "admin" : "user"
+        });
         window.location.href = "profile.html";
     } catch (error) {
         alert("Не вдалося зареєструватися. Перевірте дані або спробуйте інший логін.");

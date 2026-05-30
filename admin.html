@@ -86,7 +86,9 @@
 <script>
     let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-    if (!currentUser || currentUser.role !== "admin") {
+    if (!currentUser) {
+        window.location.href = "index.html";
+    } else if (currentUser.role !== "admin") {
         alert("Доступ заборонено");
         window.location.href = "index.html";
     }
