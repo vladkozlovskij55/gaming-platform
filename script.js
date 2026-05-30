@@ -129,6 +129,12 @@ function loginLocalUser(login, password) {
     return true;
 }
 
+function logout() {
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
+}
+
 function getCurrentUser() {
     return normalizeUser(JSON.parse(localStorage.getItem("currentUser")));
 }
@@ -171,12 +177,97 @@ function closeBurgerMenu() {
     button?.setAttribute("aria-expanded", "false");
 }
 
+function getAvatarLabel(user) {
+    return (user?.name || user?.login || "GS").trim().slice(0, 2).toUpperCase();
+}
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function toggleAccountMenu() {
+    const menu = document.querySelector(".account-menu");
+    const button = document.querySelector(".profile-nav-button");
+
+    if (!menu || !button) return;
+
+    const isOpen = menu.classList.toggle("open");
+    button.setAttribute("aria-expanded", String(isOpen));
+}
+
+function closeAccountMenu() {
+    document.querySelector(".account-menu")?.classList.remove("open");
+    document.querySelector(".profile-nav-button")?.setAttribute("aria-expanded", "false");
+}
+
 function updateAdminNavVisibility() {
     const currentUser = getCurrentUser();
 
     document.querySelectorAll(".admin-nav-button").forEach(button => {
         button.classList.toggle("hidden", currentUser?.role !== "admin");
     });
+}
+
+function updateAuthNavigation() {
+    const currentUser = getCurrentUser();
+    const nav = document.querySelector("header .nav-buttons");
+
+    updateAdminNavVisibility();
+
+    if (!nav) return;
+
+    const buttons = [...nav.querySelectorAll("button")];
+    const profileButton = buttons.find(button => (button.getAttribute("onclick") || "").includes("profile.html"));
+    const loginButton = buttons.find(button => {
+        const action = button.getAttribute("onclick") || "";
+        return action.includes("login.html") || action.includes("openLoginModal");
+    });
+    const registerButton = buttons.find(button => {
+        const action = button.getAttribute("onclick") || "";
+        return action.includes("register.html") || action.includes("openRegisterModal");
+    });
+
+    document.querySelector(".account-menu")?.remove();
+
+    if (!currentUser) {
+        if (profileButton) {
+            profileButton.classList.remove("profile-nav-button");
+            profileButton.innerHTML = "Профіль";
+            profileButton.setAttribute("onclick", "window.location.href='profile.html'");
+        }
+        loginButton?.classList.remove("hidden");
+        registerButton?.classList.remove("hidden");
+        return;
+    }
+
+    loginButton?.classList.add("hidden");
+    registerButton?.classList.add("hidden");
+
+    if (!profileButton) return;
+
+    const avatarContent = currentUser.avatar
+        ? `<img src="${escapeHtml(currentUser.avatar)}" alt="${escapeHtml(currentUser.login)}">`
+        : `<span>${escapeHtml(getAvatarLabel(currentUser))}</span>`;
+
+    profileButton.classList.add("profile-nav-button");
+    profileButton.setAttribute("type", "button");
+    profileButton.setAttribute("aria-label", "Меню профілю");
+    profileButton.setAttribute("aria-expanded", "false");
+    profileButton.setAttribute("onclick", "toggleAccountMenu()");
+    profileButton.innerHTML = avatarContent;
+
+    nav.insertAdjacentHTML("beforeend", `
+        <div class="account-menu">
+            <button onclick="window.location.href='profile.html'">Профіль</button>
+            ${currentUser.role === "admin" ? "<button onclick=\"window.location.href='admin.html'\">Адмін</button>" : ""}
+            <button class="logout" onclick="logout()">Вийти</button>
+        </div>
+    `);
 }
 
 async function registerUser() {
@@ -536,11 +627,15 @@ window.searchCourses = searchCourses;
 window.enrollCourse = enrollCourse;
 window.closeModal = closeModal;
 window.toggleBurgerMenu = toggleBurgerMenu;
+window.toggleAccountMenu = toggleAccountMenu;
+window.closeAccountMenu = closeAccountMenu;
 window.updateAdminNavVisibility = updateAdminNavVisibility;
+window.updateAuthNavigation = updateAuthNavigation;
+window.logout = logout;
 
 window.addEventListener("load", function () {
     hideLoader();
-    updateAdminNavVisibility();
+    updateAuthNavigation();
     loadCourses();
     loadMyCourses();
     loadResults();
@@ -553,6 +648,12 @@ window.addEventListener("load", function () {
 
     if (document.querySelector(".counter")) {
         animateCounters();
+    }
+});
+
+document.addEventListener("click", function (event) {
+    if (!event.target.closest(".profile-nav-button") && !event.target.closest(".account-menu")) {
+        closeAccountMenu();
     }
 });
 

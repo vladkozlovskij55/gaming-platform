@@ -13,6 +13,12 @@
 <header>
     <div class="logo" onclick="window.location.href='index.html'">GameStudy</div>
 
+    <button class="burger-menu" type="button" aria-label="Open menu" aria-expanded="false" onclick="toggleBurgerMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
     <div class="nav-buttons">
         <button onclick="window.location.href='lessons.html'">Уроки</button>
         <button onclick="window.location.href='test.html'">Тести</button>
@@ -136,7 +142,7 @@
         document.getElementById("adminResultsCount").innerText = getStoredResultsCount();
     }
 
-    function renderCourses() {
+    function renderAdminCourses() {
         document.getElementById("courseList").innerHTML = courses.length ? courses.map((course, index) => `
             <article class="admin-course-card">
                 <img src="${course.image || defaultCourseImage}" alt="${course.name}">
@@ -179,7 +185,7 @@
         }
 
         saveCourses();
-        renderCourses();
+        renderAdminCourses();
 
         document.getElementById("courseName").value = "";
         document.getElementById("courseDescription").value = "";
@@ -200,15 +206,16 @@
     function deleteCourse(index) {
         courses.splice(index, 1);
         saveCourses();
-        renderCourses();
+        renderAdminCourses();
     }
 
     function saveCourses() {
         localStorage.setItem("courses", JSON.stringify(courses));
     }
 
-    renderCourses();
+renderAdminCourses();
 </script>
+<script src="./script.js"></script>
 
 </body>
 </html>
