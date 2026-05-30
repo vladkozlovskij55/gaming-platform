@@ -307,6 +307,13 @@
             saveResult(currentTestType, score);
         }
     }
+
+    const selectedTestGame = window.location.hash.replace("#", "") || localStorage.getItem("selectedTestGame");
+
+    if (["cs2", "dota2", "valorant", "lol"].includes(selectedTestGame)) {
+        localStorage.removeItem("selectedTestGame");
+        startTest(selectedTestGame);
+    }
 </script>
 
 </body>

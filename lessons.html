@@ -34,208 +34,228 @@
     </div>
 </header>
 
-<main class="lessons-page">
-    <section class="lessons-hero">
+<main class="lessons-page wiki-page">
+    <section class="lessons-hero wiki-hero">
         <div>
-            <span class="profile-kicker">GameStudy Academy</span>
-            <h1>Навчальні уроки</h1>
-            <p>Оберіть гру, знайдіть потрібну тему і почніть прокачувати навички.</p>
+            <span class="profile-kicker">GameStudy Wiki</span>
+            <h1>Міні-вікі для новачків</h1>
+            <p>Короткі навчальні матеріали по CS2, Dota 2, Valorant та League of Legends: основи, помилки, поради, довідники і перехід до тестів.</p>
         </div>
         <div class="lessons-hero-stat">
-            <span>Lessons</span>
-            <strong>12</strong>
-            <p>активні напрямки</p>
+            <span>Games</span>
+            <strong>4</strong>
+            <p>навчальні напрями</p>
         </div>
     </section>
 
-    <section class="lesson-controls">
-        <input type="search" id="lessonSearch" placeholder="Пошук уроків..." oninput="renderLessons()">
-        <div class="lesson-filter">
-            <button class="active" data-filter="all" onclick="setLessonFilter('all')">Усі</button>
-            <button data-filter="cs2" onclick="setLessonFilter('cs2')">CS2</button>
-            <button data-filter="dota2" onclick="setLessonFilter('dota2')">Dota 2</button>
-            <button data-filter="valorant" onclick="setLessonFilter('valorant')">Valorant</button>
-            <button data-filter="lol" onclick="setLessonFilter('lol')">League of Legends</button>
-        </div>
+    <section class="wiki-nav" aria-label="Навігація по матеріалах">
+        <a href="#cs2">CS2</a>
+        <a href="#dota2">Dota 2</a>
+        <a href="#valorant">Valorant</a>
+        <a href="#lol">League of Legends</a>
     </section>
 
-    <section id="lessonCards" class="lesson-cards-grid"></section>
-
-    <section id="lessonBlock" class="lesson-detail-panel hidden">
-        <div class="profile-panel-head">
-            <h2 id="lessonTitle"></h2>
-        </div>
-        <p id="lessonText"></p>
-    </section>
+    <section id="wikiSections" class="wiki-sections"></section>
 
     <p class="test-back-link"><a href="index.html">Повернутися на головну</a></p>
 </main>
 
 <script>
-    const lessons = [
+    const wikiGames = [
         {
-            type: "cs2",
-            game: "CS2",
-            title: "Aim, позиції та контроль віддачі",
-            description: "Базовий урок для стабільної стрільби, правильного прицілу і впевнених дуелей.",
-            level: "Середній",
-            duration: "18 С…РІ",
-            text: "CS2 вимагає хорошої реакції, точного наведення та контролю віддачі. Для покращення aim важливо регулярно тренуватися на спеціальних картах, контролювати положення прицілу та аналізувати власні помилки. Гравець повинен правильно займати позиції, швидко реагувати на появу суперника та вміти використовувати карту для переваги в бою."
+            id: "cs2",
+            name: "CS2",
+            cardTitle: "CS2: старт для новачка",
+            image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80",
+            description: "CS2 - командний тактичний шутер, де раунд виграється не тільки стрільбою, а й позицією, економікою, гранатами та комунікацією.",
+            basics: [
+                "Основи стрільби: тримай приціл на рівні голови, зупиняйся перед пострілом і стріляй короткими чергами.",
+                "Контроль віддачі: тренуй spray pattern основних видів зброї і не затискай без потреби на дальній дистанції.",
+                "Позиціонування: займай кути, де тебе складніше перевірити, і не відкривайся одразу під кілька напрямків.",
+                "Економіка раундів: купуйся разом з командою, не ламай buy самостійними force-buy.",
+                "Гранати: smoke закриває огляд, flash допомагає виходити, molotov вибиває суперника з позиції."
+            ],
+            mistakes: [
+                "Бігти і стріляти одночасно.",
+                "Купувати зброю, коли команда грає eco.",
+                "Пікати один і той самий кут без гранат.",
+                "Не дивитися на мінікарту та не давати інформацію."
+            ],
+            tips: [
+                "Перед матчем 10 хвилин потренуй aim і spray.",
+                "Після смерті називай коротко: де суперник, скільки їх, яка зброя.",
+                "Вивчи по 2-3 базові smoke на популярні карти."
+            ],
+            videoUrl: "https://www.youtube.com/results?search_query=CS2+beginner+guide+aim+utility",
+            testType: "cs2"
         },
         {
-            type: "dota2",
-            game: "Dota 2",
-            title: "Фарм, ролі та контроль карти",
-            description: "Розбір командної взаємодії, економіки героя, предметів і важливих об'єктів.",
-            level: "Базовий",
-            duration: "22 С…РІ",
-            text: "У Dota 2 важливу роль відіграють командна взаємодія, фарм, розуміння ролей та контроль карти. Гравцю потрібно знати сильні й слабкі сторони свого героя, вміти добивати крипів, купувати правильні предмети та своєчасно допомагати союзникам. Перемога залежить не лише від індивідуального рівня, а й від правильної тактики та комунікації з командою."
+            id: "dota2",
+            name: "Dota 2",
+            cardTitle: "Dota 2: ролі, фарм і карта",
+            image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80",
+            description: "Dota 2 - стратегічна командна гра, де важливі ролі, економіка героя, огляд карти, предмети, таймінги і командні бійки.",
+            basics: [
+                "Розумій свою роль: carry фармить, support допомагає команді, mid створює темп, offlane ініціює.",
+                "Добивай крипів, бо золото і досвід визначають силу героя.",
+                "Контролюй карту через wards, smoke та інформацію про переміщення суперників.",
+                "Грай навколо об'єктів: вежі, Roshan, руни, ключові артефакти."
+            ],
+            mistakes: [
+                "Битися без ключових предметів або ultimate.",
+                "Фармити небезпечну лінію без vision.",
+                "Купувати предмети без урахування ворогів.",
+                "Ігнорувати телепорт і не допомагати команді."
+            ],
+            tips: [
+                "Дивись на таймінги: руни, Roshan, cooldown ultimate.",
+                "Перед fight визнач, кого треба фокусити першим.",
+                "Якщо програєш лінію, грай безпечніше і проси допомогу."
+            ],
+            guideTitle: "Міні-довідник предметів",
+            guide: [
+                { role: "Carry", text: "предмети для шкоди та виживання: Black King Bar, Butterfly, Satanic, Manta Style." },
+                { role: "Support", text: "предмети для команди та виживання: Glimmer Cape, Force Staff, Mekansm, Observer/Sentry Wards." },
+                { role: "Mid", text: "предмети для темпу та контролю карти: Bottle, Blink Dagger, Black King Bar, Orchid або Eul." },
+                { role: "Tank/Offlane", text: "предмети для ініціації та захисту: Vanguard, Pipe, Crimson Guard, Blink Dagger." }
+            ],
+            videoUrl: "https://www.youtube.com/results?search_query=Dota+2+beginner+guide+roles+items",
+            testType: "dota2"
         },
         {
-            type: "valorant",
-            game: "Valorant",
-            title: "Агенти, кути та командний вхід",
-            description: "Тактика раунду, перевірка позицій, здібності агентів і координація команди.",
-            level: "Просунутий",
-            duration: "20 С…РІ",
-            text: "Valorant поєднує точну стрільбу та унікальні здібності агентів. Для успішної гри потрібно правильно перевіряти кути, займати вигідні позиції, координувати дії з командою та грамотно використовувати здібності. Важливими є комунікація, контроль карти, знання ролей агентів та вміння швидко адаптуватися до ситуації під час раунду."
+            id: "valorant",
+            name: "Valorant",
+            cardTitle: "Valorant: агенти і командна тактика",
+            image: "https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=1200&q=80",
+            description: "Valorant поєднує точну стрільбу з унікальними здібностями агентів. Тут важливі ролі, контроль карти, атака, захист і командна комунікація.",
+            basics: [
+                "Ролі агентів: Duelist відкриває простір, Initiator збирає інформацію, Controller закриває огляд, Sentinel тримає зону.",
+                "Здібності: використовуй utility до контакту, а не після програної дуелі.",
+                "Контроль карти: перевіряй кути, забирай простір поступово і не віддавай mid без боротьби.",
+                "Атака/захист: в атаці заходь разом, у захисті грай від інформації та retake-плану.",
+                "Командна комунікація: називай позицію, кількість ворогів, використані здібності та spike."
+            ],
+            mistakes: [
+                "Виходити першим без flash, smoke або інформації.",
+                "Використовувати всі здібності на початку раунду без плану.",
+                "Грати post-plant далеко від spike і без crossfire.",
+                "Мовчати після контакту з суперником."
+            ],
+            tips: [
+                "Тримай crosshair на рівні голови ще до появи суперника.",
+                "Вивчи стандартні smoke і flash для улюбленої карти.",
+                "Після plant грай від часу, а не шукай зайві дуелі."
+            ],
+            videoUrl: "https://www.youtube.com/results?search_query=Valorant+beginner+guide+agents+map+control",
+            testType: "valorant"
         },
         {
-            id: "cs2-smokes",
-            type: "cs2",
-            game: "CS2",
-            title: "Utility: smokes, flashes та retake",
-            description: "Практичний урок про гранати, вихід на точку та повернення контролю після plant.",
-            level: "Просунутий",
-            duration: "24 С…РІ",
-            text: "У CS2 utility вирішує раунд ще до першого контакту. Важливо знати базові smoke, flash і molotov для виходу на точку, а також домовлятися з командою про таймінги. Для retake спершу збирайте інформацію, відрізайте позиції суперника гранатами і заходьте разом."
-        },
-        {
-            id: "cs2-economy",
-            type: "cs2",
-            game: "CS2",
-            title: "Економіка та buy rounds",
-            description: "Як планувати закуп, eco, force-buy і не ламати економіку команди.",
-            level: "Базовий",
-            duration: "16 С…РІ",
-            text: "Економіка CS2 допомагає команді грати стабільно. Не купуйте окремо від команди, рахуйте гроші союзників і вирішуйте разом: eco, force-buy або full-buy."
-        },
-        {
-            id: "dota2-wards",
-            type: "dota2",
-            game: "Dota 2",
-            title: "Vision, wards та контроль карти",
-            description: "Урок про огляд, deward, smoke move і безпечний фарм.",
-            level: "Середній",
-            duration: "19 С…РІ",
-            text: "Vision у Dota 2 відкриває карту і дозволяє приймати кращі рішення. Ставте wards під цілі команди: Roshan, tower push або захист carry. Deward позбавляє суперника інформації."
-        },
-        {
-            id: "dota2-teamfight",
-            type: "dota2",
-            game: "Dota 2",
-            title: "Teamfight та позиціонування",
-            description: "Як починати бій, кого фокусити і де стояти різним ролям.",
-            level: "Просунутий",
-            duration: "25 С…РІ",
-            text: "У командному бою важливо розуміти свою роль. Initiator починає fight, support тримає сейви, carry заходить тоді, коли небезпечні spells уже витрачені."
-        },
-        {
-            id: "valorant-crosshair",
-            type: "valorant",
-            game: "Valorant",
-            title: "Crosshair placement та peeking",
-            description: "Тренування прицілу на рівні голови, swing, jiggle peek і prefire.",
-            level: "Базовий",
-            duration: "17 С…РІ",
-            text: "У Valorant приціл має чекати суперника ще до того, як він з'явиться. Тримайте crosshair на рівні голови, перевіряйте кути короткими peeks і використовуйте prefire обережно."
-        },
-        {
-            id: "valorant-postplant",
-            type: "valorant",
-            game: "Valorant",
-            title: "Post-plant та retake",
-            description: "Як грати після встановлення spike і як правильно повертати site.",
-            level: "Середній",
-            duration: "21 С…РІ",
-            text: "Після plant займіть crossfire, контролюйте defuse і грайте від часу. У retake дочекайтеся команди, використайте utility для очищення кутів і заходьте синхронно."
-        },
-        {
-            id: "lol-roles-lanes",
-            type: "lol",
-            game: "League of Legends",
-            title: "Ролі та лінії",
-            description: "Top, jungle, mid, bot і support: хто за що відповідає та як будувати план гри.",
-            level: "Базовий",
-            duration: "18 хв",
-            text: "У League of Legends кожна роль має власну задачу. Top часто грає через тиск на боковій лінії, jungle контролює темп карти, mid допомагає обом сторонам, bot масштабується через предмети, а support створює vision і захищає команду."
-        },
-        {
-            id: "lol-farm-waves",
-            type: "lol",
-            game: "League of Legends",
-            title: "Фарм і контроль хвиль",
-            description: "Last hit, freeze, slow push і reset хвилі для стабільної економіки.",
-            level: "Середній",
-            duration: "22 хв",
-            text: "Фарм у League of Legends напряму впливає на силу чемпіона. Контроль хвиль допомагає безпечно збирати золото, готувати roam або створювати тиск перед об'єктами. Freeze захищає від gank, а slow push дає час команді."
-        },
-        {
-            id: "lol-macro-objectives",
-            type: "lol",
-            game: "League of Legends",
-            title: "Макро-гра та об'єкти",
-            description: "Дракони, Herald, Baron, vision і правильні ротації після лінійної стадії.",
-            level: "Просунутий",
-            duration: "26 хв",
-            text: "Макро-гра у League of Legends - це рішення на карті. Перед драконом або Baron потрібно поставити vision, пропушити лінії та зайняти позиції раніше суперника. Команда, яка контролює об'єкти, частіше перетворює перевагу у перемогу."
+            id: "lol",
+            name: "League of Legends",
+            cardTitle: "League of Legends: ролі, лінії і макро",
+            image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80",
+            description: "League of Legends - командна MOBA, де перемога залежить від фарму, контролю хвиль, vision, об'єктів, ролей і правильних рішень на карті.",
+            basics: [
+                "Ролі та лінії: Top тримає бічну лінію, Jungle контролює темп, Mid впливає на карту, ADC завдає шкоди, Support захищає і ставить vision.",
+                "Фарм: добивай міньйонів останнім ударом і не втрачай хвилі без причини.",
+                "Контроль хвиль: freeze захищає, slow push створює тиск, reset допомагає повернутися на базу.",
+                "Макро-гра: грай навколо драконів, Herald, Baron, веж і vision."
+            ],
+            mistakes: [
+                "Пушити лінію без wards і вмирати від gank.",
+                "Ігнорувати драконів та Baron, коли команда має перевагу.",
+                "Битися без ключових ultimate або предметів.",
+                "Фокусити tank замість небезпечного carry."
+            ],
+            tips: [
+                "Перед об'єктом заздалегідь постав vision і пропуш лінії.",
+                "Якщо програв лінію, фарми безпечно і не віддавай додаткові смерті.",
+                "Слідкуй за мінікартою кожні кілька секунд."
+            ],
+            guideTitle: "Міні-довідник предметів",
+            guide: [
+                { role: "ADC", text: "предмети для атаки: Infinity Edge, Kraken Slayer, Rapid Firecannon, Guardian Angel." },
+                { role: "Support", text: "предмети для контролю та захисту: Locket, Redemption, Mikael's Blessing, Control Wards." },
+                { role: "Mid", text: "предмети для магічної шкоди: Luden, Liandry, Zhonya, Rabadon's Deathcap." },
+                { role: "Jungle", text: "предмети для ганків та контролю об'єктів: jungle item, boots, damage або tank-ядро під чемпіона." },
+                { role: "Top", text: "предмети для виживання та тиску: Hullbreaker, Sterak, Jak'Sho, Thornmail або Spirit Visage." }
+            ],
+            videoUrl: "https://www.youtube.com/results?search_query=League+of+Legends+beginner+guide+roles+items",
+            testType: "lol"
         }
     ];
-    let currentLessonFilter = "all";
 
-    function setLessonFilter(type) {
-        currentLessonFilter = type;
-        document.querySelectorAll(".lesson-filter button").forEach(button => {
-            button.classList.toggle("active", button.dataset.filter === type);
-        });
-        renderLessons();
+    function renderList(items) {
+        return `<ul>${items.map(item => `<li>${item}</li>`).join("")}</ul>`;
     }
 
-    function renderLessons() {
-        const query = document.getElementById("lessonSearch").value.toLowerCase().trim();
-        const filteredLessons = lessons.filter(lesson => {
-            const matchesGame = currentLessonFilter === "all" || lesson.type === currentLessonFilter;
-            const searchableText = `${lesson.game} ${lesson.title} ${lesson.description} ${lesson.level}`.toLowerCase();
-            return matchesGame && searchableText.includes(query);
-        });
+    function renderGuide(game) {
+        if (!game.guide) return "";
 
-        document.getElementById("lessonCards").innerHTML = filteredLessons.length ? filteredLessons.map(lesson => `
-            <article class="lesson-game-card ${lesson.type}-lesson">
-                <span class="lesson-game">${lesson.game}</span>
-                <h2>${lesson.title}</h2>
-                <p>${lesson.description}</p>
-                <div class="lesson-meta">
-                    <span>${lesson.level}</span>
-                    <span>${lesson.duration}</span>
+        return `
+            <div class="wiki-info-block wiki-guide">
+                <h3>${game.guideTitle}</h3>
+                <div class="wiki-guide-grid">
+                    ${game.guide.map(item => `
+                        <article>
+                            <strong>${item.role}</strong>
+                            <p>${item.text}</p>
+                        </article>
+                    `).join("")}
                 </div>
-                <button onclick="showLesson('${lesson.id || lesson.type}')">Почати урок</button>
-            </article>
-        `).join("") : "<p class='muted-text empty-leaderboard'>Уроків за вашим запитом не знайдено</p>";
+            </div>
+        `;
     }
 
-    function showLesson(type) {
-        const lesson = lessons.find(item => item.id === type || item.type === type);
-        if (!lesson) return;
+    function renderWiki() {
+        document.getElementById("wikiSections").innerHTML = wikiGames.map(game => `
+            <article class="wiki-game-section ${game.id}-lesson" id="${game.id}">
+                <div class="wiki-game-card">
+                    <div class="wiki-game-media">
+                        <img src="${game.image}" alt="${game.name}">
+                    </div>
+                    <div class="wiki-game-intro">
+                        <span class="lesson-game">${game.name}</span>
+                        <h2>${game.cardTitle}</h2>
+                        <p>${game.description}</p>
+                        <div class="wiki-actions">
+                            <button onclick="markLessonCompleted('${game.id}-wiki')">Позначити прочитаним</button>
+                            <button class="secondary-btn" onclick="goToTest('${game.testType}')">Пройти тест</button>
+                        </div>
+                    </div>
+                </div>
 
-        document.getElementById("lessonTitle").innerText = `Урок: ${lesson.game}`;
-        document.getElementById("lessonText").innerText = lesson.text;
-        document.getElementById("lessonBlock").classList.remove("hidden");
-        markLessonCompleted(lesson.id || lesson.type);
+                <div class="wiki-content-grid">
+                    <div class="wiki-info-block">
+                        <h3>Основи для новачка</h3>
+                        ${renderList(game.basics)}
+                    </div>
+                    <div class="wiki-info-block">
+                        <h3>Типові помилки</h3>
+                        ${renderList(game.mistakes)}
+                    </div>
+                    <div class="wiki-info-block">
+                        <h3>Поради</h3>
+                        ${renderList(game.tips)}
+                    </div>
+                    <div class="wiki-info-block wiki-video">
+                        <h3>Відео-матеріал</h3>
+                        <p>Добірка відео для швидкого старту і закріплення теми.</p>
+                        <a href="${game.videoUrl}" target="_blank" rel="noopener">Відкрити відео</a>
+                    </div>
+                </div>
+
+                ${renderGuide(game)}
+            </article>
+        `).join("");
     }
 
     function markLessonCompleted(type) {
         let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        if (!currentUser) return;
+        if (!currentUser) {
+            alert("Увійдіть в акаунт, щоб зберегти прогрес.");
+            return;
+        }
 
         currentUser.completedLessons = currentUser.completedLessons || [];
         if (!currentUser.completedLessons.includes(type)) {
@@ -251,9 +271,15 @@
         }
 
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        alert("Матеріал збережено у прогресі профілю.");
     }
 
-    renderLessons();
+    function goToTest(type) {
+        localStorage.setItem("selectedTestGame", type);
+        window.location.href = `test.html#${type}`;
+    }
+
+    renderWiki();
 </script>
 <script src="./script.js"></script>
 
