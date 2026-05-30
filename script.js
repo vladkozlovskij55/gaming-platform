@@ -265,6 +265,7 @@ function loadMyCourses() {
 
     if (!user.id) {
         container.innerHTML = "<p>У вас поки немає курсів</p>";
+        document.getElementById("profileCoursesCount") && (document.getElementById("profileCoursesCount").innerText = (user.myCourses || []).length);
         return;
     }
 
@@ -273,8 +274,11 @@ function loadMyCourses() {
         .then(courses => {
             if (!courses || courses.length === 0) {
                 container.innerHTML = "<p>У вас поки немає курсів</p>";
+                document.getElementById("profileCoursesCount") && (document.getElementById("profileCoursesCount").innerText = "0");
                 return;
             }
+
+            document.getElementById("profileCoursesCount") && (document.getElementById("profileCoursesCount").innerText = courses.length);
 
             container.innerHTML = courses.map(course => `
                 <div class="card">
@@ -285,6 +289,7 @@ function loadMyCourses() {
         })
         .catch(() => {
             container.innerHTML = "<p>У вас поки немає курсів</p>";
+            document.getElementById("profileCoursesCount") && (document.getElementById("profileCoursesCount").innerText = "0");
         });
 }
 
@@ -314,6 +319,8 @@ function loadResults() {
 
     if (!user.id) {
         container.innerHTML = "<p>Немає результатів</p>";
+        document.getElementById("profileResultsCount") && (document.getElementById("profileResultsCount").innerText =
+            [user.cs2_score, user.dota2_score, user.valorant_score].filter(score => Number(score) > 0).length);
         return;
     }
 
@@ -322,8 +329,11 @@ function loadResults() {
         .then(results => {
             if (!results || results.length === 0) {
                 container.innerHTML = "<p>Немає результатів</p>";
+                document.getElementById("profileResultsCount") && (document.getElementById("profileResultsCount").innerText = "0");
                 return;
             }
+
+            document.getElementById("profileResultsCount") && (document.getElementById("profileResultsCount").innerText = results.length);
 
             container.innerHTML = results.map(result => `
                 <div class="card">
@@ -334,6 +344,7 @@ function loadResults() {
         })
         .catch(() => {
             container.innerHTML = "<p>Немає результатів</p>";
+            document.getElementById("profileResultsCount") && (document.getElementById("profileResultsCount").innerText = "0");
         });
 }
 
