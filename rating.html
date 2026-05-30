@@ -21,14 +21,31 @@
     </div>
 </header>
 
-<div class="box leaderboard-box">
-    <h2>🏆 Рейтинг гравців</h2>
-    <p class="muted-text">Топ користувачів за результатами тестів</p>
+<main class="rating-page">
+    <section class="rating-hero">
+        <div>
+            <span class="profile-kicker">GameStudy Leaderboard</span>
+            <h1>Рейтинг гравців</h1>
+            <p>Топ користувачів за результатами тестів CS2, Dota 2 та Valorant.</p>
+        </div>
+        <div class="rating-hero-score">
+            <span>Total</span>
+            <strong id="playersCount">0</strong>
+            <p>гравців</p>
+        </div>
+    </section>
 
-    <div id="leaderboard"></div>
+    <section id="topPlayers" class="top-players-grid"></section>
 
-    <p><a href="index.html">Повернутися на головну</a></p>
-</div>
+    <section class="leaderboard-table-panel">
+        <div class="profile-panel-head">
+            <h2>Усі гравці</h2>
+        </div>
+        <div id="leaderboard"></div>
+    </section>
+
+    <p class="test-back-link"><a href="index.html">Повернутися на головну</a></p>
+</main>
 
 <script>
     let users = JSON.parse(localStorage.getItem("users")) || [];
@@ -42,30 +59,53 @@
 
     users.sort((a, b) => b.totalScore - a.totalScore);
 
-    let html = "";
+    document.getElementById("playersCount").innerText = users.length;
 
     if (users.length === 0) {
-        html = "<p class='muted-text'>Поки що немає гравців у рейтингу</p>";
+        document.getElementById("topPlayers").innerHTML =
+            "<p class='muted-text empty-leaderboard'>Поки що немає гравців у рейтингу</p>";
+        document.getElementById("leaderboard").innerHTML = "";
     } else {
-        users.forEach((user, index) => {
-            let medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "🎮";
+        const rankClasses = ["gold", "silver", "bronze"];
+        const topUsers = users.slice(0, 3);
+        const otherUsers = users.slice(3);
 
-            html += `
-                <div class="leaderboard-item">
-                    <div class="leaderboard-place">${medal}</div>
-
-                    <div class="leaderboard-info">
-                        <h3>${user.login}</h3>
-                        <p>CS2: ${user.cs2_score || 0} | Dota 2: ${user.dota2_score || 0} | Valorant: ${user.valorant_score || 0}</p>
-                    </div>
-
-                    <div class="leaderboard-score">${user.totalScore}</div>
+        document.getElementById("topPlayers").innerHTML = topUsers.map((user, index) => `
+            <article class="top-player-card ${rankClasses[index]}">
+                <span class="top-player-rank">#${index + 1}</span>
+                <h2>${user.login || "player"}</h2>
+                <strong>${user.totalScore}</strong>
+                <div class="top-player-scores">
+                    <span>CS2 ${user.cs2_score || 0}</span>
+                    <span>Dota 2 ${user.dota2_score || 0}</span>
+                    <span>Valorant ${user.valorant_score || 0}</span>
                 </div>
-            `;
-        });
-    }
+            </article>
+        `).join("");
 
-    document.getElementById("leaderboard").innerHTML = html;
+        document.getElementById("leaderboard").innerHTML = `
+            <div class="leaderboard-table">
+                <div class="leaderboard-row leaderboard-head">
+                    <span>Місце</span>
+                    <span>Логін</span>
+                    <span>CS2</span>
+                    <span>Dota 2</span>
+                    <span>Valorant</span>
+                    <span>Загальний бал</span>
+                </div>
+                ${otherUsers.length ? otherUsers.map((user, index) => `
+                    <div class="leaderboard-row">
+                        <span class="leaderboard-rank" data-label="Місце">#${index + 4}</span>
+                        <span class="leaderboard-login" data-label="Логін">${user.login || "player"}</span>
+                        <span data-label="CS2">${user.cs2_score || 0}</span>
+                        <span data-label="Dota 2">${user.dota2_score || 0}</span>
+                        <span data-label="Valorant">${user.valorant_score || 0}</span>
+                        <span class="leaderboard-total" data-label="Загальний бал">${user.totalScore}</span>
+                    </div>
+                `).join("") : "<p class='muted-text empty-leaderboard'>Інших гравців поки що немає</p>"}
+            </div>
+        `;
+    }
 </script>
 
 </body>
