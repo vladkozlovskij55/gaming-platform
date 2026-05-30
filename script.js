@@ -88,6 +88,31 @@ function saveAdminUser() {
     );
 }
 
+function registerLocalUser(login, password) {
+    const users = getStoredUsers();
+    const exists = users.some(user => user.login === login);
+
+    if (exists) {
+        alert("Такий користувач вже існує");
+        return false;
+    }
+
+    localStorage.setItem("token", "local-user-token");
+    saveCurrentUser(
+        {
+            login,
+            password,
+            role: "user"
+        },
+        {
+            login,
+            role: "user"
+        }
+    );
+
+    return true;
+}
+
 function getCurrentUser() {
     return normalizeUser(JSON.parse(localStorage.getItem("currentUser")));
 }
@@ -192,7 +217,9 @@ async function registerUser() {
         });
         window.location.href = "profile.html";
     } catch (error) {
-        alert("Не вдалося зареєструватися. Перевірте дані або спробуйте інший логін.");
+        if (registerLocalUser(login, password)) {
+            window.location.href = "profile.html";
+        }
     }
 }
 
