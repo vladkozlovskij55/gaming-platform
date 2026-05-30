@@ -477,7 +477,13 @@ async function loadCourses() {
         }
 
         const courses = await response.json();
-        loadedCourses = [...localCourses, ...courses];
+        const apiCourses = Array.isArray(courses) ? courses : [];
+        loadedCourses = [...localCourses, ...apiCourses];
+
+        if (loadedCourses.length === 0) {
+            loadedCourses = FALLBACK_COURSES;
+        }
+
         renderCourses(loadedCourses);
     } catch (error) {
         loadedCourses = localCourses.length ? localCourses : FALLBACK_COURSES;
