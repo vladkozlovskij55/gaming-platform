@@ -109,6 +109,14 @@ function closeBurgerMenu() {
     button?.setAttribute("aria-expanded", "false");
 }
 
+function updateAdminNavVisibility() {
+    const currentUser = getCurrentUser();
+
+    document.querySelectorAll(".admin-nav-button").forEach(button => {
+        button.classList.toggle("hidden", currentUser?.role !== "admin");
+    });
+}
+
 async function registerUser() {
     const name = document.getElementById("registerName")?.value.trim() || "";
     const email = document.getElementById("registerEmail")?.value.trim() || "";
@@ -438,9 +446,11 @@ window.searchCourses = searchCourses;
 window.enrollCourse = enrollCourse;
 window.closeModal = closeModal;
 window.toggleBurgerMenu = toggleBurgerMenu;
+window.updateAdminNavVisibility = updateAdminNavVisibility;
 
 window.addEventListener("load", function () {
     hideLoader();
+    updateAdminNavVisibility();
     loadCourses();
     loadMyCourses();
     loadResults();
