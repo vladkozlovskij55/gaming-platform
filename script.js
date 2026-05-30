@@ -119,19 +119,11 @@ function updateAdminNavVisibility() {
 }
 
 async function registerUser() {
-    const name = document.getElementById("registerName")?.value.trim() || "";
-    const email = document.getElementById("registerEmail")?.value.trim() || "";
-    const avatar = document.getElementById("registerAvatar")?.value.trim() || "";
     const login = document.getElementById("registerLogin")?.value.trim() || "";
     const password = document.getElementById("registerPassword")?.value || "";
 
-    if (!name || !email || !login || !password) {
-        alert("Заповніть ім'я, email, логін і пароль");
-        return;
-    }
-
-    if (!isValidEmail(email)) {
-        alert("Введіть коректний email");
+    if (!login || !password) {
+        alert("Введіть логін і пароль");
         return;
     }
 
@@ -175,9 +167,6 @@ async function registerUser() {
         const loginData = await loginResponse.json();
         localStorage.setItem("token", loginData.token);
         saveCurrentUser(loginData.user || registeredUser, {
-            name,
-            email,
-            avatar,
             login,
             role: login.toLowerCase() === "admin" ? "admin" : "user"
         });
