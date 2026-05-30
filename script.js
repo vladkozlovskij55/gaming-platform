@@ -228,6 +228,12 @@ function updateAuthNavigation() {
 
     if (!nav) return;
 
+    nav.querySelectorAll("button.logout").forEach(button => {
+        if (!button.closest(".account-menu")) {
+            button.remove();
+        }
+    });
+
     const buttons = [...nav.querySelectorAll("button")];
     let profileButton = buttons.find(button => (button.getAttribute("onclick") || "").includes("profile.html"));
     const ratingButton = buttons.find(button => (button.getAttribute("onclick") || "").includes("rating.html"));
@@ -272,8 +278,9 @@ function updateAuthNavigation() {
         }
     }
 
+    const avatarFallback = `<span>${escapeHtml(getAvatarLabel(currentUser))}</span>`;
     const avatarContent = isUsableAvatar(currentUser.avatar)
-        ? `<img src="${escapeHtml(currentUser.avatar)}" alt="${escapeHtml(currentUser.login)}">`
+        ? `<img src="${escapeHtml(currentUser.avatar)}" alt="${escapeHtml(currentUser.login)}" onerror="this.parentElement.innerHTML='${avatarFallback.replaceAll("'", "\\'")}'">`
         : `<span>${escapeHtml(getAvatarLabel(currentUser))}</span>`;
 
     profileButton.classList.add("profile-nav-button");
