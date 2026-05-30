@@ -536,6 +536,101 @@ input:focus,
     box-shadow: var(--glow-cyan);
 }
 
+.about-project-panel {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 24px;
+    padding: clamp(24px, 5vw, 42px);
+    border: 1px solid rgba(0, 229, 255, 0.22);
+    border-radius: 24px;
+    background:
+        linear-gradient(135deg, rgba(0, 229, 255, 0.14), transparent 34%),
+        linear-gradient(315deg, rgba(255, 43, 214, 0.14), transparent 38%),
+        rgba(8, 12, 24, 0.84);
+    box-shadow: var(--shadow), var(--glow-pink);
+    backdrop-filter: blur(14px);
+}
+
+.about-project-panel::after {
+    content: "GAMESTUDY";
+    position: absolute;
+    right: -8px;
+    bottom: -12px;
+    color: rgba(255, 255, 255, 0.045);
+    font-size: clamp(48px, 9vw, 116px);
+    font-weight: 950;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.about-project-copy,
+.about-project-grid {
+    position: relative;
+    z-index: 1;
+}
+
+.about-project-copy h2 {
+    margin: 6px 0 14px;
+    color: #ffffff;
+    font-size: clamp(32px, 5vw, 58px);
+    font-weight: 950;
+    line-height: 0.98;
+    text-transform: uppercase;
+}
+
+.about-project-copy p {
+    max-width: 620px;
+    margin: 0 0 14px;
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.about-project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.about-project-card {
+    min-height: 170px;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025)),
+        rgba(255, 255, 255, 0.045);
+    box-shadow: inset 0 0 0 1px rgba(0, 229, 255, 0.08);
+    transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+}
+
+.about-project-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 229, 255, 0.4);
+    box-shadow: var(--glow-cyan);
+}
+
+.about-project-card span {
+    color: var(--accent-3);
+    font-size: 12px;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.about-project-card h3 {
+    margin: 10px 0 8px;
+    color: #ffffff;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.about-project-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
 .features,
 .stats-grid,
 .steps-grid,
@@ -2544,6 +2639,7 @@ input:focus,
         grid-template-columns: 1fr;
     }
 
+    .about-project-panel,
     .test-hero,
     .game-select-grid,
     .rating-hero,
@@ -2642,6 +2738,10 @@ input:focus,
     }
 
     .profile-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-project-grid {
         grid-template-columns: 1fr;
     }
 
