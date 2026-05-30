@@ -137,12 +137,24 @@
     const level = Math.floor(totalScore / 100) + 1;
     const xp = totalScore % 100;
 
+    function isValidProfileAvatar(avatar) {
+        if (!avatar) return false;
+
+        const value = String(avatar).trim();
+        return /^https?:\/\//i.test(value) || /^data:image\/[a-z0-9.+-]+;base64,.{80,}/i.test(value);
+    }
+
     function renderAvatar() {
         const avatar = document.getElementById("profileAvatar");
-        if (user.avatar) {
+        const fallback = (user.name || user.login || "GS").trim().slice(0, 2).toUpperCase();
+
+        if (isValidProfileAvatar(user.avatar)) {
             avatar.innerHTML = `<img src="${user.avatar}" alt="${user.name}">`;
+            avatar.querySelector("img").addEventListener("error", () => {
+                avatar.textContent = fallback;
+            });
         } else {
-            avatar.textContent = (user.name || user.login || "GS").trim().slice(0, 2).toUpperCase();
+            avatar.textContent = fallback;
         }
     }
 
@@ -260,13 +272,10 @@
         document.getElementById("profileName").innerText = user.name;
         document.getElementById("profileEmail").innerText = user.email;
         renderAvatar();
+        if (typeof updateAuthNavigation === "function") {
+            updateAuthNavigation();
+        }
         alert("Профиль сохранён");
-    }
-
-    function logout() {
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("token");
-        window.location.href = "index.html";
     }
 </script>
 

@@ -72,6 +72,22 @@ function saveCurrentUser(user, profile = {}) {
     return normalizedUser;
 }
 
+function saveLocalUserState(user) {
+    const normalizedUser = normalizeUser(user);
+    const users = getStoredUsers();
+    const index = users.findIndex(item => item.login === normalizedUser.login);
+
+    if (index !== -1) {
+        users[index] = { ...users[index], ...normalizedUser };
+    } else {
+        users.push(normalizedUser);
+    }
+
+    saveStoredUsers(users);
+    localStorage.setItem("currentUser", JSON.stringify(normalizedUser));
+    return normalizedUser;
+}
+
 function saveAdminUser() {
     localStorage.setItem("token", "local-admin-token");
     return saveCurrentUser(
@@ -137,10 +153,6 @@ function logout() {
 
 function getCurrentUser() {
     return normalizeUser(JSON.parse(localStorage.getItem("currentUser")));
-}
-
-function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 function openLoginModal() {
@@ -487,13 +499,33 @@ function searchCourses() {
 async function enrollCourse(courseId) {
     const user = getCurrentUser();
 
-    if (!user || !user.id) {
+    if (!user) {
         alert("Увійдіть в акаунт");
         return;
     }
 
     if (!courseId) {
         alert("Оберіть курс");
+        return;
+    }
+
+    if (!user.id) {
+        const course = loadedCourses.find(item => Number(item.id) === Number(courseId));
+        const title = course ? getCourseTitle(course) : `Course #${courseId}`;
+        const myCourses = Array.isArray(user.myCourses) ? user.myCourses : [];
+
+        if (!myCourses.some(item => Number(item.id) === Number(courseId))) {
+            myCourses.push({
+                id: courseId,
+                title,
+                description: course?.description || ""
+            });
+        }
+
+        user.myCourses = myCourses;
+        user.completedLessons = Array.from(new Set([...(user.completedLessons || []), String(courseId)]));
+        saveLocalUserState(user);
+        alert("Ви записані на курс!");
         return;
     }
 
@@ -525,6 +557,17 @@ function loadMyCourses() {
     const user = getCurrentUser();
 
     if (!container || !user) return;
+
+    if (!user.id && Array.isArray(user.myCourses) && user.myCourses.length > 0) {
+        document.getElementById("profileCoursesCount") && (document.getElementById("profileCoursesCount").innerText = user.myCourses.length);
+        container.innerHTML = user.myCourses.map(course => `
+            <div class="card">
+                <h3>${escapeHtml(getCourseTitle(course))}</h3>
+                <p>${escapeHtml(course.description || "")}</p>
+            </div>
+        `).join("");
+        return;
+    }
 
     if (!user.id) {
         container.innerHTML = "<p>У вас поки немає курсів</p>";
@@ -558,7 +601,19 @@ function loadMyCourses() {
 
 function saveResult(game, score) {
     const user = getCurrentUser();
-    if (!user || !user.id) return;
+    if (!user) return;
+
+    if (!user.id) {
+        const results = JSON.parse(localStorage.getItem("results")) || [];
+        results.push({
+            login: user.login,
+            game,
+            score,
+            date: new Date().toISOString()
+        });
+        localStorage.setItem("results", JSON.stringify(results));
+        return;
+    }
 
     fetch(`${API}/results`, {
         method: "POST",

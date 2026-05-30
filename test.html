@@ -245,6 +245,8 @@
 
         if (userIndex !== -1) {
             users[userIndex] = currentUser;
+        } else {
+            users.push(currentUser);
         }
 
         localStorage.setItem("users", JSON.stringify(users));
