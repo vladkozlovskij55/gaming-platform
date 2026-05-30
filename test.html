@@ -22,32 +22,70 @@
         <button onclick="window.location.href='admin.html'">Адмін</button>
     </div>
 </header>
-<div class="box">
-    <h2>Оберіть тест</h2>
-    <p style="color:#c6d0f5;">Пройдіть тестування та перевірте свій рівень знань.</p>
+<main class="test-page">
+    <section class="test-hero">
+        <div>
+            <span class="profile-kicker">GameStudy Arena</span>
+            <h1>Оберіть тест</h1>
+            <p>Перевірте навички, прокачайте рейтинг і збережіть результат у профілі.</p>
+        </div>
+        <div class="test-hero-score">
+            <span>Mode</span>
+            <strong>Quiz</strong>
+        </div>
+    </section>
 
-    <div class="nav-buttons" style="justify-content:center; margin-top: 14px;">
-        <button onclick="startTest('cs2')">CS2</button>
-        <button onclick="startTest('dota2')">Dota 2</button>
-        <button onclick="startTest('valorant')">Valorant</button>
-    </div>
+    <section class="game-select-grid">
+        <button class="game-select-card cs2-card" onclick="startTest('cs2')">
+            <span>CS2</span>
+            <strong>Aim & positioning</strong>
+        </button>
+        <button class="game-select-card dota-card" onclick="startTest('dota2')">
+            <span>Dota 2</span>
+            <strong>Teamplay & tactics</strong>
+        </button>
+        <button class="game-select-card valorant-card" onclick="startTest('valorant')">
+            <span>Valorant</span>
+            <strong>Agents & map control</strong>
+        </button>
+    </section>
 
-    <div id="testBlock" class="hidden" style="margin-top: 24px;">
-        <h3 id="testTitle"></h3>
-        <p id="questionCounter" style="color:#c6d0f5;"></p>
+    <section id="testBlock" class="test-panel hidden">
+        <div class="test-panel-head">
+            <div>
+                <span id="questionCounter">Питання 1 з 10</span>
+                <h2 id="testTitle"></h2>
+            </div>
+            <span id="scorePreview">0 XP</span>
+        </div>
+
+        <div class="test-progress">
+            <div id="testProgressFill"></div>
+        </div>
+
         <div id="questions"></div>
-        <p id="result"></p>
-        <button id="homeBtn" class="hidden" onclick="window.location.href='index.html'">На головну</button>
-    </div>
+        <div id="result"></div>
 
-    <p style="margin-top: 20px;"><a href="profile.html">Назад у профіль</a></p>
-</div>
+        <div id="resultActions" class="test-result-actions hidden">
+            <button onclick="window.location.href='index.html'">На головну</button>
+            <button class="secondary-btn" onclick="window.location.href='profile.html'">У профіль</button>
+        </div>
+    </section>
 
+    <p class="test-back-link"><a href="profile.html">Назад у профіль</a></p>
+</main>
+
+<script src="./script.js"></script>
 <script>
     let questions = [];
     let currentQuestion = 0;
     let score = 0;
     let currentTestType = "";
+    const gameNames = {
+        cs2: "CS2",
+        dota2: "Dota 2",
+        valorant: "Valorant"
+    };
 
     function startTest(type) {
         currentTestType = type;
@@ -102,8 +140,9 @@
             document.getElementById("testTitle").innerText = "Valorant Тест";
         }
 
-        document.getElementById("result").innerText = "";
-        document.getElementById("homeBtn").classList.add("hidden");
+        document.getElementById("result").innerHTML = "";
+        document.getElementById("scorePreview").innerText = "0 XP";
+        document.getElementById("resultActions").classList.add("hidden");
         document.getElementById("testBlock").classList.remove("hidden");
 
         showQuestion();
@@ -114,11 +153,18 @@
 
         document.getElementById("questionCounter").innerText =
             "Питання " + (currentQuestion + 1) + " з " + questions.length;
+        document.getElementById("scorePreview").innerText = score + " / " + questions.length;
+        document.getElementById("testProgressFill").style.width =
+            Math.round((currentQuestion / questions.length) * 100) + "%";
 
         document.getElementById("questions").innerHTML = `
-            <p style="font-size:18px; margin-bottom:16px;">${q.q}</p>
-            <button class="answer-btn" onclick="answer(0)">${q.a[0]}</button>
-            <button class="answer-btn" onclick="answer(1)">${q.a[1]}</button>
+            <article class="question-card">
+                <p>${q.q}</p>
+                <div class="answer-grid">
+                    <button class="answer-btn" onclick="answer(0)">${q.a[0]}</button>
+                    <button class="answer-btn" onclick="answer(1)">${q.a[1]}</button>
+                </div>
+            </article>
         `;
     }
 
@@ -137,17 +183,38 @@
     }
 
     function finishTest() {
+        const percent = Math.round((score / questions.length) * 100);
+
         document.getElementById("questionCounter").innerText = "";
         document.getElementById("questions").innerHTML = "";
-        document.getElementById("result").innerText =
-            "Ваш результат: " + score + " / " + questions.length;
+        document.getElementById("testProgressFill").style.width = "100%";
+        document.getElementById("scorePreview").innerText = percent + "%";
+        document.getElementById("result").innerHTML = `
+            <div class="test-result-card">
+                <span>Тест завершено</span>
+                <h3>${gameNames[currentTestType]}</h3>
+                <div class="test-result-stats">
+                    <div>
+                        <strong>${score} / ${questions.length}</strong>
+                        <p>правильних відповідей</p>
+                    </div>
+                    <div>
+                        <strong>${percent}%</strong>
+                        <p>результат</p>
+                    </div>
+                </div>
+            </div>
+        `;
 
-        document.getElementById("homeBtn").classList.remove("hidden");
+        document.getElementById("resultActions").classList.remove("hidden");
 
         let currentUser = JSON.parse(localStorage.getItem("currentUser"));
         let users = JSON.parse(localStorage.getItem("users")) || [];
 
         if (!currentUser) {
+            if (typeof saveResult === "function") {
+                saveResult(currentTestType, score);
+            }
             return;
         }
 
@@ -176,6 +243,10 @@
 
         localStorage.setItem("users", JSON.stringify(users));
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+        if (typeof saveResult === "function") {
+            saveResult(currentTestType, score);
+        }
     }
 </script>
 
