@@ -1693,6 +1693,247 @@ input:focus,
     text-align: center;
 }
 
+.lessons-page {
+    width: min(1180px, 92%);
+    margin: 38px auto 0;
+}
+
+.lessons-hero,
+.lesson-game-card,
+.lesson-detail-panel {
+    position: relative;
+    overflow: hidden;
+}
+
+.lessons-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+    gap: 22px;
+    align-items: stretch;
+    padding: clamp(24px, 5vw, 42px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background:
+        linear-gradient(135deg, rgba(0, 229, 255, 0.16), transparent 40%),
+        linear-gradient(315deg, rgba(156, 255, 63, 0.13), transparent 38%),
+        rgba(8, 12, 24, 0.84);
+    box-shadow: var(--shadow), var(--glow-cyan);
+    backdrop-filter: blur(14px);
+}
+
+.lessons-hero::after {
+    content: "ACADEMY";
+    position: absolute;
+    right: 18px;
+    bottom: -10px;
+    color: rgba(255, 255, 255, 0.045);
+    font-size: clamp(44px, 8vw, 96px);
+    font-weight: 950;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.lessons-hero h1 {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 12px;
+    color: #ffffff;
+    font-size: clamp(38px, 6vw, 68px);
+    font-weight: 950;
+    line-height: 0.95;
+    text-transform: uppercase;
+}
+
+.lessons-hero p {
+    position: relative;
+    z-index: 1;
+    max-width: 620px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 17px;
+}
+
+.lessons-hero-stat {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    align-content: center;
+    min-height: 180px;
+    padding: 24px;
+    border: 1px solid rgba(156, 255, 63, 0.26);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.lessons-hero-stat span {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.lessons-hero-stat strong {
+    color: #ffffff;
+    font-size: clamp(52px, 8vw, 84px);
+    font-weight: 950;
+    line-height: 0.95;
+    text-shadow: 0 0 28px rgba(156, 255, 63, 0.42);
+}
+
+.lessons-hero-stat p {
+    margin-top: 8px;
+}
+
+.lesson-controls {
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    margin: 22px 0;
+}
+
+#lessonSearch {
+    width: 100%;
+}
+
+.lesson-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.lesson-filter button {
+    min-height: 46px;
+    padding: 12px 16px;
+}
+
+.lesson-filter button.active {
+    border-color: rgba(156, 255, 63, 0.44);
+    color: #071018;
+    background: linear-gradient(135deg, var(--accent-3), var(--accent));
+    box-shadow: var(--glow-cyan);
+}
+
+.lesson-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.lesson-game-card {
+    display: grid;
+    align-content: start;
+    min-height: 360px;
+    padding: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 20px;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03)),
+        rgba(8, 12, 24, 0.86);
+    box-shadow: var(--shadow);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.lesson-game-card:hover {
+    transform: translateY(-7px) scale(1.015);
+    border-color: rgba(0, 229, 255, 0.46);
+    box-shadow: var(--shadow), var(--glow-cyan);
+}
+
+.cs2-lesson {
+    background:
+        linear-gradient(145deg, rgba(0, 229, 255, 0.18), transparent 58%),
+        rgba(8, 12, 24, 0.9);
+}
+
+.dota2-lesson {
+    background:
+        linear-gradient(145deg, rgba(255, 43, 214, 0.18), transparent 58%),
+        rgba(8, 12, 24, 0.9);
+}
+
+.valorant-lesson {
+    background:
+        linear-gradient(145deg, rgba(156, 255, 63, 0.16), transparent 58%),
+        rgba(8, 12, 24, 0.9);
+}
+
+.lesson-game {
+    display: inline-flex;
+    width: max-content;
+    margin-bottom: 18px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    color: var(--accent-3);
+    font-size: 12px;
+    font-weight: 950;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.lesson-game-card h2 {
+    margin: 0 0 12px;
+    color: #ffffff;
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 950;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+.lesson-game-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.lesson-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.lesson-meta span {
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: #ffffff;
+    font-weight: 850;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.055);
+}
+
+.lesson-game-card button {
+    margin-top: auto;
+}
+
+.lesson-detail-panel {
+    margin-top: 22px;
+    padding: clamp(20px, 4vw, 30px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.024)),
+        var(--panel);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(14px);
+}
+
+.lesson-detail-panel h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(26px, 4vw, 42px);
+    text-transform: uppercase;
+}
+
+.lesson-detail-panel p {
+    margin: 12px 0 0;
+    color: var(--muted);
+    line-height: 1.75;
+}
+
 .footer {
     margin-top: 72px;
     padding: 0 0 26px;
@@ -1861,7 +2102,10 @@ input:focus,
     .test-hero,
     .game-select-grid,
     .rating-hero,
-    .top-players-grid {
+    .top-players-grid,
+    .lessons-hero,
+    .lesson-controls,
+    .lesson-cards-grid {
         grid-template-columns: 1fr;
     }
 
@@ -2076,6 +2320,39 @@ input:focus,
     .leaderboard-login,
     .leaderboard-total {
         grid-column: span 1;
+    }
+
+    .lessons-page {
+        width: min(100% - 28px, 620px);
+        margin-top: 24px;
+    }
+
+    .lessons-hero,
+    .lesson-detail-panel {
+        border-radius: 18px;
+    }
+
+    .lessons-hero {
+        padding: 22px;
+    }
+
+    .lessons-hero-stat {
+        min-height: 130px;
+    }
+
+    .lesson-filter,
+    .lesson-filter button {
+        width: 100%;
+    }
+
+    .lesson-filter {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .lesson-game-card {
+        min-height: auto;
+        padding: 20px;
     }
 
     .leaderboard-item {
