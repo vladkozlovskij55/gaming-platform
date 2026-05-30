@@ -4,6 +4,26 @@ const ADMIN_CREDENTIALS = {
     password: "admin",
     email: "admin@gmail.com"
 };
+const FALLBACK_COURSES = [
+    {
+        id: 1,
+        title: "CS2 Aim Training",
+        description: "Прокачайте точність, реакцію та контроль віддачі у CS2.",
+        image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"
+    },
+    {
+        id: 2,
+        title: "Dota 2 Basics",
+        description: "Вивчіть ролі, фарм, предмети та командну взаємодію.",
+        image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80"
+    },
+    {
+        id: 3,
+        title: "Valorant Tactics",
+        description: "Опануйте позиціонування, здібності агентів і контроль карти.",
+        image: "https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=900&q=80"
+    }
+];
 let loadedCourses = [];
 
 function getStoredUsers() {
@@ -259,7 +279,8 @@ async function loadCourses() {
         loadedCourses = courses;
         renderCourses(courses);
     } catch (error) {
-        container.innerHTML = "<p class='muted-text'>Не вдалося завантажити курси з API</p>";
+        loadedCourses = FALLBACK_COURSES;
+        renderCourses(FALLBACK_COURSES);
     }
 }
 
