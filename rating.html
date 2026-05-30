@@ -36,7 +36,7 @@
         <div>
             <span class="profile-kicker">GameStudy Leaderboard</span>
             <h1>Рейтинг гравців</h1>
-            <p>Топ користувачів за результатами тестів CS2, Dota 2 та Valorant.</p>
+            <p>Топ користувачів за результатами тестів CS2, Dota 2, Valorant та League of Legends.</p>
         </div>
         <div class="rating-hero-score">
             <span>Total</span>
@@ -64,7 +64,8 @@
         user.totalScore =
             (user.cs2_score || 0) +
             (user.dota2_score || 0) +
-            (user.valorant_score || 0);
+            (user.valorant_score || 0) +
+            (user.lol_score || 0);
     });
 
     users.sort((a, b) => b.totalScore - a.totalScore);
@@ -89,6 +90,7 @@
                     <span>CS2 ${user.cs2_score || 0}</span>
                     <span>Dota 2 ${user.dota2_score || 0}</span>
                     <span>Valorant ${user.valorant_score || 0}</span>
+                    <span>LoL ${user.lol_score || 0}</span>
                 </div>
             </article>
         `).join("");
@@ -101,6 +103,7 @@
                     <span>CS2</span>
                     <span>Dota 2</span>
                     <span>Valorant</span>
+                    <span>LoL</span>
                     <span>Загальний бал</span>
                 </div>
                 ${users.map((user, index) => `
@@ -110,6 +113,7 @@
                         <span data-label="CS2">${user.cs2_score || 0}</span>
                         <span data-label="Dota 2">${user.dota2_score || 0}</span>
                         <span data-label="Valorant">${user.valorant_score || 0}</span>
+                        <span data-label="LoL">${user.lol_score || 0}</span>
                         <span class="leaderboard-total" data-label="Загальний бал">${user.totalScore}</span>
                     </div>
                 `).join("")}

@@ -1,4 +1,4 @@
-const API = "https://gaming-platform-tydb.onrender.com";
+﻿const API = "https://gaming-platform-tydb.onrender.com";
 const ADMIN_CREDENTIALS = {
     login: "admin",
     password: "admin",
@@ -8,20 +8,26 @@ const FALLBACK_COURSES = [
     {
         id: 1,
         title: "CS2 Aim Training",
-        description: "Прокачайте точність, реакцію та контроль віддачі у CS2.",
+        description: "РџСЂРѕРєР°С‡Р°Р№С‚Рµ С‚РѕС‡РЅС–СЃС‚СЊ, СЂРµР°РєС†С–СЋ С‚Р° РєРѕРЅС‚СЂРѕР»СЊ РІС–РґРґР°С‡С– Сѓ CS2.",
         image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"
     },
     {
         id: 2,
         title: "Dota 2 Basics",
-        description: "Вивчіть ролі, фарм, предмети та командну взаємодію.",
+        description: "Р’РёРІС‡С–С‚СЊ СЂРѕР»С–, С„Р°СЂРј, РїСЂРµРґРјРµС‚Рё С‚Р° РєРѕРјР°РЅРґРЅСѓ РІР·Р°С”РјРѕРґС–СЋ.",
         image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80"
     },
     {
         id: 3,
         title: "Valorant Tactics",
-        description: "Опануйте позиціонування, здібності агентів і контроль карти.",
+        description: "РћРїР°РЅСѓР№С‚Рµ РїРѕР·РёС†С–РѕРЅСѓРІР°РЅРЅСЏ, Р·РґС–Р±РЅРѕСЃС‚С– Р°РіРµРЅС‚С–РІ С– РєРѕРЅС‚СЂРѕР»СЊ РєР°СЂС‚Рё.",
         image: "https://images.unsplash.com/photo-1542751110-97427bbecf20?auto=format&fit=crop&w=900&q=80"
+    },
+    {
+        id: 4,
+        title: "League of Legends Basics",
+        description: "РћСЃРЅРѕРІРё СЂРѕР»РµР№, Р»С–РЅС–Р№, С„Р°СЂРјСѓ, РјР°РєСЂРѕ-РіСЂРё С‚Р° РєРѕРјР°РЅРґРЅРѕС— РІР·Р°С”РјРѕРґС–С—.",
+        image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80"
     }
 ];
 let loadedCourses = [];
@@ -52,7 +58,9 @@ function normalizeUser(user, profile = {}) {
         myCourses: user.myCourses || profile.myCourses || [],
         cs2_score: user.cs2_score || 0,
         dota2_score: user.dota2_score || 0,
-        valorant_score: user.valorant_score || 0
+        valorant_score: user.valorant_score || 0,
+        lol_score: user.lol_score || 0,
+        favoriteGame: user.favoriteGame || profile.favoriteGame || "cs2"
     };
 }
 
@@ -109,7 +117,7 @@ function registerLocalUser(login, password) {
     const exists = users.some(user => user.login === login);
 
     if (exists) {
-        alert("Такий користувач вже існує");
+        alert("РўР°РєРёР№ РєРѕСЂРёСЃС‚СѓРІР°С‡ РІР¶Рµ С–СЃРЅСѓС”");
         return false;
     }
 
@@ -265,7 +273,7 @@ function updateAuthNavigation() {
     if (!currentUser) {
         if (profileButton) {
             profileButton.classList.remove("profile-nav-button");
-            profileButton.innerHTML = "Профіль";
+            profileButton.innerHTML = "РџСЂРѕС„С–Р»СЊ";
             profileButton.setAttribute("onclick", "window.location.href='profile.html'");
         }
         loginButton?.classList.remove("hidden");
@@ -279,7 +287,7 @@ function updateAuthNavigation() {
     if (!profileButton) {
         profileButton = document.createElement("button");
         profileButton.setAttribute("onclick", "window.location.href='profile.html'");
-        profileButton.textContent = "Профіль";
+        profileButton.textContent = "РџСЂРѕС„С–Р»СЊ";
 
         if (ratingButton) {
             nav.insertBefore(profileButton, ratingButton.nextElementSibling);
@@ -295,16 +303,16 @@ function updateAuthNavigation() {
 
     profileButton.classList.add("profile-nav-button");
     profileButton.setAttribute("type", "button");
-    profileButton.setAttribute("aria-label", "Меню профілю");
+    profileButton.setAttribute("aria-label", "РњРµРЅСЋ РїСЂРѕС„С–Р»СЋ");
     profileButton.setAttribute("aria-expanded", "false");
     profileButton.setAttribute("onclick", "toggleAccountMenu()");
     profileButton.innerHTML = avatarContent;
 
     nav.insertAdjacentHTML("beforeend", `
         <div class="account-menu">
-            <button onclick="window.location.href='profile.html'">Профіль</button>
-            ${currentUser.role === "admin" ? "<button onclick=\"window.location.href='admin.html'\">Адмін</button>" : ""}
-            <button class="logout" onclick="logout()">Вийти</button>
+            <button onclick="window.location.href='profile.html'">РџСЂРѕС„С–Р»СЊ</button>
+            ${currentUser.role === "admin" ? "<button onclick=\"window.location.href='admin.html'\">РђРґРјС–РЅ</button>" : ""}
+            <button class="logout" onclick="logout()">Р’РёР№С‚Рё</button>
         </div>
     `);
 }
@@ -314,18 +322,18 @@ async function registerUser() {
     const password = document.getElementById("registerPassword")?.value || "";
 
     if (!login || !password) {
-        alert("Введіть логін і пароль");
+        alert("Р’РІРµРґС–С‚СЊ Р»РѕРіС–РЅ С– РїР°СЂРѕР»СЊ");
         return;
     }
 
     if (login.length < 3 || password.length < 3) {
-        alert("Логін і пароль мають містити щонайменше 3 символи");
+        alert("Р›РѕРіС–РЅ С– РїР°СЂРѕР»СЊ РјР°СЋС‚СЊ РјС–СЃС‚РёС‚Рё С‰РѕРЅР°Р№РјРµРЅС€Рµ 3 СЃРёРјРІРѕР»Рё");
         return;
     }
 
     if (login.toLowerCase() === ADMIN_CREDENTIALS.login) {
         if (password !== ADMIN_CREDENTIALS.password) {
-            alert("Для admin використовуйте пароль admin");
+            alert("Р”Р»СЏ admin РІРёРєРѕСЂРёСЃС‚РѕРІСѓР№С‚Рµ РїР°СЂРѕР»СЊ admin");
             return;
         }
 
@@ -335,7 +343,7 @@ async function registerUser() {
     }
 
     if (getStoredUsers().some(user => user.login === login)) {
-        alert("Такий користувач вже існує. Увійдіть у свій акаунт.");
+        alert("РўР°РєРёР№ РєРѕСЂРёСЃС‚СѓРІР°С‡ РІР¶Рµ С–СЃРЅСѓС”. РЈРІС–Р№РґС–С‚СЊ Сѓ СЃРІС–Р№ Р°РєР°СѓРЅС‚.");
         return;
     }
 
@@ -374,7 +382,7 @@ async function registerUser() {
         window.location.href = "profile.html";
     } catch (error) {
         if (registerLocalUser(login, password)) {
-            alert("API тимчасово недоступний, акаунт створено локально.");
+            alert("API С‚РёРјС‡Р°СЃРѕРІРѕ РЅРµРґРѕСЃС‚СѓРїРЅРёР№, Р°РєР°СѓРЅС‚ СЃС‚РІРѕСЂРµРЅРѕ Р»РѕРєР°Р»СЊРЅРѕ.");
             window.location.href = "profile.html";
         }
     }
@@ -385,7 +393,7 @@ async function loginUser() {
     const password = document.getElementById("passwordInput")?.value || "";
 
     if (!login || !password) {
-        alert("Введіть логін і пароль");
+        alert("Р’РІРµРґС–С‚СЊ Р»РѕРіС–РЅ С– РїР°СЂРѕР»СЊ");
         return;
     }
 
@@ -420,7 +428,7 @@ async function loginUser() {
             return;
         }
 
-        alert("Помилка входу. Перевірте логін і пароль.");
+        alert("РџРѕРјРёР»РєР° РІС…РѕРґСѓ. РџРµСЂРµРІС–СЂС‚Рµ Р»РѕРіС–РЅ С– РїР°СЂРѕР»СЊ.");
     }
 }
 
@@ -434,7 +442,7 @@ function renderCourses(courses) {
 
     if (!courses || courses.length === 0) {
         const query = document.getElementById("searchInput")?.value.trim();
-        container.innerHTML = `<p class='muted-text'>${query ? "Курсів за вашим запитом не знайдено" : "Курси поки недоступні"}</p>`;
+        container.innerHTML = `<p class='muted-text'>${query ? "РљСѓСЂСЃС–РІ Р·Р° РІР°С€РёРј Р·Р°РїРёС‚РѕРј РЅРµ Р·РЅР°Р№РґРµРЅРѕ" : "РљСѓСЂСЃРё РїРѕРєРё РЅРµРґРѕСЃС‚СѓРїРЅС–"}</p>`;
         return;
     }
 
@@ -447,7 +455,7 @@ function renderCourses(courses) {
                 ${image}
                 <h3>${title}</h3>
                 <p>${course.description || ""}</p>
-                <button onclick="enrollCourse(${course.id})">Записатися</button>
+                <button onclick="enrollCourse(${course.id})">Р—Р°РїРёСЃР°С‚РёСЃСЏ</button>
             </div>
         `;
     }).join("");
@@ -484,9 +492,21 @@ async function loadCourses() {
             loadedCourses = FALLBACK_COURSES;
         }
 
+        const hasLeagueCourse = loadedCourses.some(course => getCourseTitle(course).toLowerCase().includes("league of legends"));
+
+        if (!hasLeagueCourse) {
+            loadedCourses.push(FALLBACK_COURSES.find(course => course.title === "League of Legends Basics"));
+        }
+
         renderCourses(loadedCourses);
     } catch (error) {
         loadedCourses = localCourses.length ? localCourses : FALLBACK_COURSES;
+        const hasLeagueCourse = loadedCourses.some(course => getCourseTitle(course).toLowerCase().includes("league of legends"));
+
+        if (!hasLeagueCourse) {
+            loadedCourses.push(FALLBACK_COURSES.find(course => course.title === "League of Legends Basics"));
+        }
+
         renderCourses(loadedCourses);
     }
 }
@@ -652,9 +672,20 @@ function loadResults() {
     if (!container || !user) return;
 
     if (!user.id) {
-        container.innerHTML = "<p>Немає результатів</p>";
-        document.getElementById("profileResultsCount") && (document.getElementById("profileResultsCount").innerText =
-            [user.cs2_score, user.dota2_score, user.valorant_score].filter(score => Number(score) > 0).length);
+        const localResults = [
+            { game: "CS2", score: user.cs2_score || 0 },
+            { game: "Dota 2", score: user.dota2_score || 0 },
+            { game: "Valorant", score: user.valorant_score || 0 },
+            { game: "League of Legends", score: user.lol_score || 0 }
+        ].filter(result => Number(result.score) > 0);
+
+        container.innerHTML = localResults.length ? localResults.map(result => `
+            <div class="card">
+                <h3>${result.game}</h3>
+                <p>Результат: ${result.score} балів</p>
+            </div>
+        `).join("") : "<p>Немає результатів</p>";
+        document.getElementById("profileResultsCount") && (document.getElementById("profileResultsCount").innerText = localResults.length);
         return;
     }
 
@@ -681,7 +712,6 @@ function loadResults() {
             document.getElementById("profileResultsCount") && (document.getElementById("profileResultsCount").innerText = "0");
         });
 }
-
 function closeModal() {
     document.getElementById("courseModal")?.classList.add("hidden");
 }
@@ -728,7 +758,7 @@ function setupPwaInstall() {
 
     installButton.addEventListener("click", async function () {
         if (!deferredInstallPrompt) {
-            alert("Якщо встановлення недоступне, відкрийте меню браузера та оберіть встановлення застосунку.");
+            alert("РЇРєС‰Рѕ РІСЃС‚Р°РЅРѕРІР»РµРЅРЅСЏ РЅРµРґРѕСЃС‚СѓРїРЅРµ, РІС–РґРєСЂРёР№С‚Рµ РјРµРЅСЋ Р±СЂР°СѓР·РµСЂР° С‚Р° РѕР±РµСЂС–С‚СЊ РІСЃС‚Р°РЅРѕРІР»РµРЅРЅСЏ Р·Р°СЃС‚РѕСЃСѓРЅРєСѓ.");
             return;
         }
 

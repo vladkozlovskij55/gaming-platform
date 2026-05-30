@@ -485,6 +485,7 @@ button:active {
 }
 
 input,
+select,
 #searchInput {
     width: 100%;
     min-height: 48px;
@@ -505,6 +506,7 @@ input::placeholder,
 }
 
 input:focus,
+select:focus,
 #searchInput:focus {
     border-color: rgba(0, 229, 255, 0.72);
     background: rgba(8, 13, 28, 0.92);
@@ -1104,6 +1106,12 @@ input:focus,
 .valorant-card {
     background:
         linear-gradient(145deg, rgba(156, 255, 63, 0.18), transparent 56%),
+        rgba(8, 12, 24, 0.86);
+}
+
+.lol-card {
+    background:
+        linear-gradient(145deg, rgba(33, 255, 120, 0.2), rgba(0, 229, 255, 0.08) 56%),
         rgba(8, 12, 24, 0.86);
 }
 
@@ -1885,7 +1893,7 @@ input:focus,
 
 .leaderboard-row {
     display: grid;
-    grid-template-columns: 86px minmax(150px, 1.2fr) repeat(4, minmax(96px, 1fr));
+    grid-template-columns: 86px minmax(150px, 1.2fr) repeat(5, minmax(96px, 1fr));
     align-items: center;
     gap: 12px;
     padding: 14px 16px;
@@ -2084,6 +2092,12 @@ input:focus,
 .valorant-lesson {
     background:
         linear-gradient(145deg, rgba(156, 255, 63, 0.16), transparent 58%),
+        rgba(8, 12, 24, 0.9);
+}
+
+.lol-lesson {
+    background:
+        linear-gradient(145deg, rgba(33, 255, 120, 0.18), rgba(0, 229, 255, 0.08) 58%),
         rgba(8, 12, 24, 0.9);
 }
 
