@@ -113,6 +113,22 @@ function registerLocalUser(login, password) {
     return true;
 }
 
+function loginLocalUser(login, password) {
+    const localUser = getStoredUsers().find(user => user.login === login && user.password === password);
+
+    if (!localUser) {
+        return false;
+    }
+
+    localStorage.setItem("token", "local-user-token");
+    saveCurrentUser(localUser, {
+        login: localUser.login,
+        role: localUser.role || "user"
+    });
+
+    return true;
+}
+
 function getCurrentUser() {
     return normalizeUser(JSON.parse(localStorage.getItem("currentUser")));
 }
@@ -172,6 +188,11 @@ async function registerUser() {
         return;
     }
 
+    if (login.length < 3 || password.length < 3) {
+        alert("Логін і пароль мають містити щонайменше 3 символи");
+        return;
+    }
+
     if (login.toLowerCase() === ADMIN_CREDENTIALS.login) {
         if (password !== ADMIN_CREDENTIALS.password) {
             alert("Для admin використовуйте пароль admin");
@@ -180,6 +201,11 @@ async function registerUser() {
 
         saveAdminUser();
         window.location.href = "profile.html";
+        return;
+    }
+
+    if (getStoredUsers().some(user => user.login === login)) {
+        alert("Такий користувач вже існує. Увійдіть у свій акаунт.");
         return;
     }
 
@@ -218,6 +244,7 @@ async function registerUser() {
         window.location.href = "profile.html";
     } catch (error) {
         if (registerLocalUser(login, password)) {
+            alert("API тимчасово недоступний, акаунт створено локально.");
             window.location.href = "profile.html";
         }
     }
@@ -258,6 +285,11 @@ async function loginUser() {
         saveCurrentUser(data.user, localProfile);
         window.location.href = "profile.html";
     } catch (error) {
+        if (loginLocalUser(login, password)) {
+            window.location.href = "profile.html";
+            return;
+        }
+
         alert("Помилка входу. Перевірте логін і пароль.");
     }
 }
