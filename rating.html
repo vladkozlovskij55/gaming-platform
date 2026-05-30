@@ -67,12 +67,12 @@
         document.getElementById("leaderboard").innerHTML = "";
     } else {
         const rankClasses = ["gold", "silver", "bronze"];
+        const medals = ["🥇", "🥈", "🥉"];
         const topUsers = users.slice(0, 3);
-        const otherUsers = users.slice(3);
 
         document.getElementById("topPlayers").innerHTML = topUsers.map((user, index) => `
             <article class="top-player-card ${rankClasses[index]}">
-                <span class="top-player-rank">#${index + 1}</span>
+                <span class="top-player-rank">${medals[index]} #${index + 1}</span>
                 <h2>${user.login || "player"}</h2>
                 <strong>${user.totalScore}</strong>
                 <div class="top-player-scores">
@@ -93,16 +93,16 @@
                     <span>Valorant</span>
                     <span>Загальний бал</span>
                 </div>
-                ${otherUsers.length ? otherUsers.map((user, index) => `
+                ${users.map((user, index) => `
                     <div class="leaderboard-row">
-                        <span class="leaderboard-rank" data-label="Місце">#${index + 4}</span>
+                        <span class="leaderboard-rank" data-label="Місце">${medals[index] || "🎮"} #${index + 1}</span>
                         <span class="leaderboard-login" data-label="Логін">${user.login || "player"}</span>
                         <span data-label="CS2">${user.cs2_score || 0}</span>
                         <span data-label="Dota 2">${user.dota2_score || 0}</span>
                         <span data-label="Valorant">${user.valorant_score || 0}</span>
                         <span class="leaderboard-total" data-label="Загальний бал">${user.totalScore}</span>
                     </div>
-                `).join("") : "<p class='muted-text empty-leaderboard'>Інших гравців поки що немає</p>"}
+                `).join("")}
             </div>
         `;
     }
