@@ -18,8 +18,8 @@
         <button onclick="window.location.href='test.html'">Тести</button>
         <button onclick="window.location.href='profile.html'">Профіль</button>
         <button onclick="window.location.href='rating.html'">Рейтинг</button>
-        <button onclick="openLoginModal()">Вхід</button>
-        <button onclick="openRegisterModal()">Реєстрація</button>
+        <button onclick="window.location.href='login.html'">Вхід</button>
+        <button onclick="window.location.href='register.html'">Реєстрація</button>
         <button class="admin-nav-button hidden" onclick="window.location.href='admin.html'">Адмін</button>
     </div>
 </header>
@@ -28,39 +28,15 @@
     <h2>Вхід до акаунта</h2>
     <p style="color:#c6d0f5;">Увійдіть, щоб проходити курси, тести та відстежувати прогрес.</p>
 
-    <input type="text" id="login" placeholder="Логін">
-    <input type="password" id="password" placeholder="Пароль">
+    <input type="text" id="loginInput" placeholder="Логін">
+    <input type="password" id="passwordInput" placeholder="Пароль">
 
     <button onclick="loginUser()">Увійти</button>
 
     <p><a href="index.html">Повернутися на головну</a></p>
 </div>
 
-<script>
-function loginUser() {
-    let login = document.getElementById("login").value;
-    let password = document.getElementById("password").value;
-
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-
-    let foundUser = users.find(user =>
-        user.login === login && user.password === password
-    );
-
-    if (foundUser) {
-        foundUser.name = foundUser.name || foundUser.login || "Player";
-        foundUser.email = foundUser.email || `${foundUser.login || "player"}@gamestudy.local`;
-        foundUser.avatar = foundUser.avatar || "";
-        foundUser.completedLessons = foundUser.completedLessons || [];
-        foundUser.completedTests = foundUser.completedTests || [];
-        localStorage.setItem("currentUser", JSON.stringify(foundUser));
-        alert("Вхід успішний!");
-        window.location.href = "profile.html";
-    } else {
-        alert("Невірний логін або пароль");
-    }
-}
-</script>
+<script src="./script.js"></script>
 
 </body>
 </html>

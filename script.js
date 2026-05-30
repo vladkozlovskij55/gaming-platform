@@ -292,6 +292,11 @@ async function enrollCourse(courseId) {
         return;
     }
 
+    if (!courseId) {
+        alert("Оберіть курс");
+        return;
+    }
+
     try {
         const response = await fetch(`${API}/courses/enroll`, {
             method: "POST",
